@@ -44,6 +44,9 @@ export const zh: Record<string, string> = {
   'Hong Kong Time': '香港時間',
   'Switch to 中文': 'Switch to EN',
   'Language': '語言',
+  '25 matches free on ViuTV 99台': 'ViuTV 99台免費直播25場',
+  'All times in Hong Kong Time (HKT)': '所有時間為香港時間 (HKT)',
+  'ViuTV 99台 will broadcast 25 selected matches for free including the opening match, both semi-finals and the final. All times below are in HKT (UTC+8).': 'ViuTV 99台將免費直播25場精選賽事，包括開幕戰、兩場四強賽及決賽。以下所有時間均為香港時間 (UTC+8)。',
 }
 
 export type Lang = 'en' | 'zh'

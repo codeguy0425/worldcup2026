@@ -24,13 +24,12 @@ export function ViuTV() {
           </svg>
           <h2 className="text-lg font-bold">{t('ViuTV Free Broadcast')}</h2>
         </div>
-        <p className="text-red-200 text-sm">25 matches free on ViuTV 99台</p>
-        <p className="text-red-300 text-xs mt-1">All times in Hong Kong Time (HKT)</p>
+        <p className="text-red-200 text-sm">{t('25 matches free on ViuTV 99台')}</p>
+        <p className="text-red-300 text-xs mt-1">{t('All times in Hong Kong Time (HKT)')}</p>
       </div>
 
       <p className="text-xs text-gray-500 leading-relaxed">
-        ViuTV 99台 will broadcast 25 selected matches for free including the opening match,
-        both semi-finals and the final. All times below are in HKT (UTC+8).
+        {t('ViuTV 99台 will broadcast 25 selected matches for free including the opening match, both semi-finals and the final. All times below are in HKT (UTC+8).')}
       </p>
 
       {Object.entries(grouped).map(([date, ms]) => {
