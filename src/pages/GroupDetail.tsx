@@ -38,12 +38,9 @@ export function GroupDetail() {
           ))}
         </div>
 
-        {standings.length > 0 ? (
-          <GroupTable standings={standings} />
-        ) : (
-          <div className="text-center py-6 text-gray-400 text-sm">
-            <p>{t('Standings will appear after matches begin')}</p>
-          </div>
+        <GroupTable standings={standings} />
+        {standings.every(s => s.played === 0) && (
+          <p className="text-xs text-center text-gray-400 mt-2">{t('Standings will appear after matches begin')}</p>
         )}
       </div>
 

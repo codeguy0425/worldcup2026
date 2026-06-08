@@ -5,7 +5,7 @@ import { groups } from '../data/groups'
 import { stadiums } from '../data/stadiums'
 import { viutvMatchIds, viutvMatches } from '../data/viutv'
 import { computeStandings } from '../utils/standings'
-import type { Match, Team, Group, Stadium, GroupStanding } from '../types'
+import type { Match, Team, Group, Stadium } from '../types'
 
 export function useMatches(): Match[] {
   return useMemo(() => matches.map(m => ({
@@ -36,10 +36,27 @@ export function useViuTVMatches(): (Match & { hkDate: string; hkTime: string })[
   }, [])
 }
 
-export function useStandings(groupId: string): GroupStanding[] {
+export function useStandings(groupId: string) {
   return useMemo(() => {
+    const groupInfo = groups.find(g => g.id === groupId)
     const groupMatches = matches.filter(m => m.stage === 'group' && m.group === `Group ${groupId}`)
-    return computeStandings(`Group ${groupId}`, groupMatches)
+    const computed = computeStandings(`Group ${groupId}`, groupMatches)
+    const computedIds = new Set(computed.map(s => s.team))
+    if (groupInfo) {
+      for (const tid of groupInfo.teams) {
+        if (!computedIds.has(tid)) {
+          const team = teams.find(t => t.id === tid)
+          computed.push({
+            team: team?.name || tid,
+            teamZh: team?.nameZh || tid,
+            played: 0, won: 0, drawn: 0, lost: 0,
+            gf: 0, ga: 0, gd: 0, pts: 0,
+            form: [],
+          })
+        }
+      }
+    }
+    return computed
   }, [groupId])
 }
 
