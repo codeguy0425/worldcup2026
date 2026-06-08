@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useGroups, useStandings } from '../hooks/useData'
 import { GroupMiniTable } from '../components/GroupMiniTable'
-import { useT } from '../i18n/LanguageContext'
+import { useT, useLang } from '../i18n/LanguageContext'
 
 function GroupCard({ groupId }: { groupId: string }) {
+  const lang = useLang()
   const g = useGroups().find(x => x.id === groupId)!
   const standings = useStandings(groupId)
   return (
@@ -13,7 +14,7 @@ function GroupCard({ groupId }: { groupId: string }) {
     >
       <div className="px-4 pt-3 pb-1">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold">{g.name} {g.nameZh}</h3>
+          <h3 className="font-bold">{lang === 'zh' ? g.nameZh : g.name}</h3>
         </div>
       </div>
       <GroupMiniTable standings={standings} />

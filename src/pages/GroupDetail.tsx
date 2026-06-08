@@ -4,10 +4,11 @@ import { GroupTable } from '../components/GroupTable'
 import { MatchCard } from '../components/MatchCard'
 import { groups } from '../data/groups'
 import { TeamBadge } from '../components/TeamBadge'
-import { useT } from '../i18n/LanguageContext'
+import { useT, useLang } from '../i18n/LanguageContext'
 
 export function GroupDetail() {
   const t = useT()
+  const lang = useLang()
   const { id } = useParams<{ id: string }>()
   const groupId = id?.toUpperCase() || 'A'
   const standings = useStandings(groupId)
@@ -29,7 +30,7 @@ export function GroupDetail() {
 
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-lg">{groupInfo.name} {groupInfo.nameZh}</h2>
+          <h2 className="font-bold text-lg">{lang === 'zh' ? groupInfo.nameZh : groupInfo.name}</h2>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
