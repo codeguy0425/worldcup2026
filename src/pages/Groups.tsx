@@ -1,6 +1,25 @@
 import { Link } from 'react-router-dom'
-import { useGroups } from '../hooks/useData'
+import { useGroups, useStandings } from '../hooks/useData'
+import { GroupMiniTable } from '../components/GroupMiniTable'
 import { useT } from '../i18n/LanguageContext'
+
+function GroupCard({ groupId }: { groupId: string }) {
+  const g = useGroups().find(x => x.id === groupId)!
+  const standings = useStandings(groupId)
+  return (
+    <Link
+      to={`/groups/${groupId}`}
+      className="block bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 active:scale-[0.98] transition-transform overflow-hidden"
+    >
+      <div className="px-4 pt-3 pb-1">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold">{g.name} {g.nameZh}</h3>
+        </div>
+      </div>
+      <GroupMiniTable standings={standings} />
+    </Link>
+  )
+}
 
 export function Groups() {
   const t = useT()
@@ -11,23 +30,7 @@ export function Groups() {
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{t('Groups')}</h2>
       <div className="grid gap-3">
         {groups.map(g => (
-          <Link
-            key={g.id}
-            to={`/groups/${g.id}`}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 active:scale-[0.98] transition-transform"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-bold text-lg">{g.name} {g.nameZh}</h3>
-              <span className="text-xs text-gray-400">{g.teams.length} {t('teams')}</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {g.teams.map(tid => (
-                <span key={tid} className="text-xs bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded-full text-gray-600 dark:text-gray-300">
-                  {tid}
-                </span>
-              ))}
-            </div>
-          </Link>
+          <GroupCard key={g.id} groupId={g.id} />
         ))}
       </div>
     </div>

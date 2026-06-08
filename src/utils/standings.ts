@@ -66,6 +66,7 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
     .sort((a, b) => {
       if (b.pts !== a.pts) return b.pts - a.pts
       if (b.gd !== a.gd) return b.gd - a.gd
-      return b.gf - a.gf
+      if (b.gf !== a.gf) return b.gf - a.gf
+      return a.team.localeCompare(b.team)
     })
 }
