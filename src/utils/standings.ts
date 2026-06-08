@@ -1,18 +1,7 @@
 import type { Match, GroupStanding } from '../types'
-import { teamByName } from '../data/teams'
+import { teams } from '../data/teams'
 
-const TEAM_NAME_OVERRIDES: Record<string, string> = {
-  'Turkey': 'Türkiye',
-  'Ivory Coast': 'Côte d\'Ivoire',
-  'Iran': 'IR Iran',
-  'Cape Verde': 'Cabo Verde',
-  'DR Congo': 'Congo DR',
-  'Bosnia & Herzegovina': 'Bosnia and Herzegovina',
-}
-
-function normalizeName(name: string): string {
-  return TEAM_NAME_OVERRIDES[name] || name
-}
+const teamMap = new Map(teams.map(t => [t.id, t]))
 
 export function computeStandings(group: string, matches: Match[]): GroupStanding[] {
   const teamIds = new Set<string>()
@@ -28,7 +17,7 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
   const standings = new Map<string, GroupStanding>()
 
   for (const id of teamIds) {
-    const team = teamByName.get(id)
+    const team = teamMap.get(id)
     standings.set(id, {
       team: team?.name || id,
       teamZh: team?.nameZh || id,

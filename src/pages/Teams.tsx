@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTeams, useGroups } from '../hooks/useData'
-import { t, getLang } from '../i18n'
+import { t } from '../i18n'
 
 export function Teams() {
   const teams = useTeams()
   const groups = useGroups()
   const [filter, setFilter] = useState('all')
-  const lang = getLang()
 
   const filtered = filter === 'all' ? teams : teams.filter(t => t.group === filter)
 

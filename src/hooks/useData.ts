@@ -5,7 +5,7 @@ import { groups } from '../data/groups'
 import { stadiums } from '../data/stadiums'
 import { viutvMatchIds, viutvMatches } from '../data/viutv'
 import { computeStandings } from '../utils/standings'
-import type { Match, Team, Group, Stadium, GroupStanding, ViuTVMatch } from '../types'
+import type { Match, Team, Group, Stadium, GroupStanding } from '../types'
 
 export function useMatches(): Match[] {
   return useMemo(() => matches.map(m => ({

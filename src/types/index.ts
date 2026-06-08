@@ -4,14 +4,14 @@ export interface Match {
   date: string
   time: string
   timeUtc: string
-  team1: string
-  team2: string
+  team1Id: string
+  team2Id: string
   group: string
-  ground: string
+  groundId: string
   num?: number
   score1?: number
   score2?: number
-  viutv: boolean
+  viutv?: boolean
   stage: 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'third' | 'final'
 }
 

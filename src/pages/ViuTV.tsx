@@ -2,6 +2,7 @@ import { useViuTVMatches } from '../hooks/useData'
 import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { CountdownTimer } from '../components/CountdownTimer'
+import { stadiums } from '../data/stadiums'
 import { t } from '../i18n'
 
 export function ViuTV() {
@@ -62,7 +63,7 @@ export function ViuTV() {
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-xs text-gray-400">
-                    <span>{m.ground}</span>
+                    <span>{stadiums.find(s => s.id === m.groundId)?.name ?? m.groundId}</span>
                     <CountdownTimer target={`${date}T${m.hkTime}:00+08:00`} />
                   </div>
                 </div>

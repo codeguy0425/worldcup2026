@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useMatches } from '../hooks/useData'
 import { MatchCard } from '../components/MatchCard'
@@ -11,7 +10,6 @@ export function Home() {
   const today = new Date().toISOString().slice(0, 10)
   const todayMatches = matches.filter(m => m.date === today)
   const upcoming = matches.filter(m => m.date > today).slice(0, 5)
-  const opening = matches[0]
 
   return (
     <div className="space-y-4">

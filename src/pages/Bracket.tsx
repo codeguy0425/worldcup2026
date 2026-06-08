@@ -1,5 +1,6 @@
 import { useMatches } from '../hooks/useData'
 import { Link } from 'react-router-dom'
+import { stadiums } from '../data/stadiums'
 import { t } from '../i18n'
 
 const roundLabels: Record<string, string> = {
@@ -50,7 +51,7 @@ export function Bracket() {
                       </span>
                       <span className="flex-1 text-left text-sm font-medium truncate">{m.team2Id}</span>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">{m.ground}</p>
+                    <p className="text-xs text-gray-400 mt-1">{stadiums.find(s => s.id === m.groundId)?.name ?? m.groundId}</p>
                   </div>
                 </Link>
               ))}

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { TeamBadge } from './TeamBadge'
 import { ViuTVBadge } from './ViuTVBadge'
-import { hkDisplay } from '../utils/hkTime'
+import { stadiums } from '../data/stadiums'
 import type { Match } from '../types'
 
 export function MatchCard({ match }: { match: Match }) {
@@ -34,7 +34,7 @@ export function MatchCard({ match }: { match: Match }) {
           </div>
         </div>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-gray-400 truncate">{match.ground}</span>
+          <span className="text-xs text-gray-400 truncate">{stadiums.find(s => s.id === match.groundId)?.name ?? match.groundId}</span>
           {match.viutv && <ViuTVBadge size="sm" />}
         </div>
       </div>
