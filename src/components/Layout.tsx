@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { t } from '../i18n'
+import { useT, useToggleLang } from '../i18n/LanguageContext'
 
 const tabs = [
   { to: '/', label: 'Home', icon: '🏠' },
@@ -10,6 +10,8 @@ const tabs = [
 ]
 
 export function Layout() {
+  const t = useT()
+  const toggleLang = useToggleLang()
   return (
     <div className="min-h-screen flex flex-col max-w-lg mx-auto bg-gray-50 dark:bg-gray-950">
       <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b dark:border-gray-800 px-4 py-3">
@@ -18,7 +20,12 @@ export function Layout() {
             <span>🏆</span>
             <span>World Cup 2026</span>
           </h1>
-          <span className="text-xs text-gray-400">世界盃</span>
+          <button
+            onClick={toggleLang}
+            className="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded-full transition-colors"
+          >
+            中文/EN
+          </button>
         </div>
       </header>
 

@@ -1,7 +1,7 @@
 import { useMatches } from '../hooks/useData'
 import { Link } from 'react-router-dom'
 import { stadiums } from '../data/stadiums'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 const roundLabels: Record<string, string> = {
   r32: 'Round of 32',
@@ -13,6 +13,7 @@ const roundLabels: Record<string, string> = {
 }
 
 export function Bracket() {
+  const t = useT()
   const matches = useMatches()
   const knockout = matches.filter(m => m.stage !== 'group')
 

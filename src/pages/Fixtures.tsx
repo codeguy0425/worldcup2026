@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMatches } from '../hooks/useData'
 import { MatchCard } from '../components/MatchCard'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 const stages = [
   { key: 'all', label: 'All' },
@@ -14,6 +14,7 @@ const stages = [
 ]
 
 export function Fixtures() {
+  const t = useT()
   const matches = useMatches()
   const [stageFilter, setStageFilter] = useState('all')
 

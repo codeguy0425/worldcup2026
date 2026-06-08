@@ -1,9 +1,10 @@
 import { useStadiums } from '../hooks/useData'
-import { t, getLang } from '../i18n'
+import { useT, useLang } from '../i18n/LanguageContext'
 
 export function StadiumsPage() {
+  const t = useT()
+  const lang = useLang()
   const stadiums = useStadiums()
-  const lang = getLang()
 
   return (
     <div className="space-y-3">

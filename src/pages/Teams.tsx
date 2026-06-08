@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTeams, useGroups } from '../hooks/useData'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function Teams() {
+  const t = useT()
   const teams = useTeams()
   const groups = useGroups()
   const [filter, setFilter] = useState('all')

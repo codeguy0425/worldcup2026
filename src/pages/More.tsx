@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { t } from '../i18n'
+import { useT, useToggleLang, useLang } from '../i18n/LanguageContext'
 
 const links = [
   { to: '/teams', label: 'Teams', icon: '👥', desc: '48 teams, groups & rankings' },
@@ -9,9 +9,28 @@ const links = [
 ]
 
 export function More() {
+  const t = useT()
+  const toggleLang = useToggleLang()
+  const lang = useLang()
+
   return (
     <div className="space-y-3">
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{t('More')}</h2>
+
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-sm">{t('Language')}</p>
+            <p className="text-xs text-gray-400">{lang === 'zh' ? '中文' : 'English'}</p>
+          </div>
+          <button
+            onClick={toggleLang}
+            className="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          >
+            {t('Switch to 中文')}
+          </button>
+        </div>
+      </div>
       <div className="space-y-2">
         {links.map(link => (
           <Link

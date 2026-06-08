@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useGroups } from '../hooks/useData'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function Groups() {
+  const t = useT()
   const groups = useGroups()
 
   return (

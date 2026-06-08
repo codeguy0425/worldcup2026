@@ -3,9 +3,10 @@ import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { CountdownTimer } from '../components/CountdownTimer'
 import { stadiums } from '../data/stadiums'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function ViuTV() {
+  const t = useT()
   const matches = useViuTVMatches()
 
   const grouped = matches.reduce<Record<string, typeof matches>>((acc, m) => {

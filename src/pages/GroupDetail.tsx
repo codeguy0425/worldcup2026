@@ -4,9 +4,10 @@ import { GroupTable } from '../components/GroupTable'
 import { MatchCard } from '../components/MatchCard'
 import { groups } from '../data/groups'
 import { TeamBadge } from '../components/TeamBadge'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function GroupDetail() {
+  const t = useT()
   const { id } = useParams<{ id: string }>()
   const groupId = id?.toUpperCase() || 'A'
   const standings = useStandings(groupId)

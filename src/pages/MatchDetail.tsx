@@ -4,9 +4,10 @@ import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { hkDisplay } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function MatchDetail() {
+  const t = useT()
   const { id } = useParams()
   const match = useMatchById(Number(id))
 

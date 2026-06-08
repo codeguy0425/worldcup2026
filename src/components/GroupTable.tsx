@@ -1,7 +1,8 @@
 import type { GroupStanding } from '../types'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function GroupTable({ standings }: { standings: GroupStanding[] }) {
+  const t = useT()
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">

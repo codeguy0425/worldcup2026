@@ -2,9 +2,10 @@ import { Link } from 'react-router-dom'
 import { useMatches } from '../hooks/useData'
 import { MatchCard } from '../components/MatchCard'
 import { CountdownTimer } from '../components/CountdownTimer'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function Home() {
+  const t = useT()
   const matches = useMatches().filter(m => m.stage === 'group')
 
   const today = new Date().toISOString().slice(0, 10)

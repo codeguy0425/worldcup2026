@@ -1,9 +1,10 @@
 import { useParams, Link } from 'react-router-dom'
 import { useMatches, useTeamByName } from '../hooks/useData'
 import { MatchCard } from '../components/MatchCard'
-import { t } from '../i18n'
+import { useT } from '../i18n/LanguageContext'
 
 export function TeamDetail() {
+  const t = useT()
   const { name } = useParams<{ name: string }>()
   const team = useTeamByName(name || '')
   const allMatches = useMatches()
