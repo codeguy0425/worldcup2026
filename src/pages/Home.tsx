@@ -6,11 +6,19 @@ import { useT } from '../i18n/LanguageContext'
 
 export function Home() {
   const t = useT()
-  const matches = useMatches().filter(m => m.stage === 'group')
+  const allMatches = useMatches()
 
-  const today = new Date().toISOString().slice(0, 10)
-  const todayMatches = matches.filter(m => m.date === today)
-  const upcoming = matches.filter(m => m.date > today).slice(0, 5)
+  const now = new Date()
+  const today = now.toISOString().slice(0, 10)
+
+  const sorted = [...allMatches].sort((a, b) => {
+    if (a.date !== b.date) return a.date.localeCompare(b.date)
+    return a.time.localeCompare(b.time)
+  })
+
+  const todayMatches = sorted.filter(m => m.date === today)
+  const upcoming = sorted.filter(m => m.date > today).slice(0, 5)
+  const hasMatches = todayMatches.length > 0 || upcoming.length > 0
 
   return (
     <div className="space-y-4">
@@ -40,11 +48,14 @@ export function Home() {
         <span className="text-xs text-gray-400">104 {t('matches')}</span>
       </div>
 
+      {!hasMatches && (
+        <p className="text-center text-gray-400 py-8">{t('No matches found')}</p>
+      )}
+
       <div className="space-y-2">
-        {todayMatches.length > 0
-          ? todayMatches.map(m => <MatchCard key={m.id} match={m} />)
-          : upcoming.slice(0, 3).map(m => <MatchCard key={m.id} match={m} />)
-        }
+        {(todayMatches.length > 0 ? todayMatches : upcoming).map(m => (
+          <MatchCard key={m.id} match={m} />
+        ))}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
