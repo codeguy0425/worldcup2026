@@ -15,7 +15,7 @@ import { NotFound } from './pages/NotFound'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/worldcup2026">
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
