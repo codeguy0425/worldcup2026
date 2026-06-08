@@ -1,0 +1,43 @@
+import { Link } from 'react-router-dom'
+import { TeamBadge } from './TeamBadge'
+import { ViuTVBadge } from './ViuTVBadge'
+import { hkDisplay } from '../utils/hkTime'
+import type { Match } from '../types'
+
+export function MatchCard({ match }: { match: Match }) {
+  const dateLabel = match.date.slice(5)
+  const hkTime = match.time
+
+  return (
+    <Link to={`/match/${match.id}`} className="block">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3 active:scale-[0.98] transition-transform">
+        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+          <span>{dateLabel}</span>
+          <span>{hkTime} HKT</span>
+          {match.group && <span className="font-medium">{match.group}</span>}
+        </div>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex-1 text-right">
+            <TeamBadge teamId={match.team1Id} size="md" />
+          </div>
+          <div className="flex items-center gap-2 min-w-[60px] justify-center">
+            {match.score1 !== undefined ? (
+              <span className="text-lg font-bold tabular-nums">
+                {match.score1} – {match.score2}
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400 font-medium">VS</span>
+            )}
+          </div>
+          <div className="flex-1 text-left">
+            <TeamBadge teamId={match.team2Id} size="md" />
+          </div>
+        </div>
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-xs text-gray-400 truncate">{match.ground}</span>
+          {match.viutv && <ViuTVBadge size="sm" />}
+        </div>
+      </div>
+    </Link>
+  )
+}
