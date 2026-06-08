@@ -47,6 +47,63 @@ export const zh: Record<string, string> = {
   '25 matches free on ViuTV 99台': 'ViuTV 99台免費直播25場',
   'All times in Hong Kong Time (HKT)': '所有時間為香港時間 (HKT)',
   'ViuTV 99台 will broadcast 25 selected matches for free including the opening match, both semi-finals and the final. All times below are in HKT (UTC+8).': 'ViuTV 99台將免費直播25場精選賽事，包括開幕戰、兩場四強賽及決賽。以下所有時間均為香港時間 (UTC+8)。',
+
+  'Results': '賽果',
+  'Knockout': '淘汰賽',
+  'Free ViuTV': '免費直播',
+  'VS': '對',
+  'vs': '對',
+  'matches': '場賽事',
+  'teams': '支球隊',
+
+  'Page Not Found': '找不到頁面',
+  "This page doesn't exist": '此頁面不存在',
+  'Back to Home': '返回首頁',
+
+  'World Cup 2026': '世界盃 2026',
+
+  'Opening Match': '開幕戰',
+  'FIFA World Cup 2026': 'FIFA 世界盃 2026',
+  '11 Jun – 19 Jul': '6月11日 – 7月19日',
+  'USA · Canada · Mexico': '美國 · 加拿大 · 墨西哥',
+
+  'Standings will appear after matches begin': '賽事開始後將顯示積分表',
+
+  'R32': '32強',
+  'R16': '16強',
+  'QF': '八強',
+  'SF': '四強',
+
+  'Sunday': '星期日',
+  'Monday': '星期一',
+  'Tuesday': '星期二',
+  'Wednesday': '星期三',
+  'Thursday': '星期四',
+  'Friday': '星期五',
+  'Saturday': '星期六',
+
+  'North America': '北美洲',
+  'South America': '南美洲',
+  'Europe': '歐洲',
+  'Asia': '亞洲',
+  'Africa': '非洲',
+  'Oceania': '大洋洲',
+
+  '48 teams, groups & rankings': '48支球隊、組別及排名',
+  '16 venues across 3 countries': '3個國家共16個球場',
+  'Round of 32 to the Final': '32強至決賽',
+  '25 free matches schedule': '25場免費直播賽程',
+  'Knockout Bracket': '淘汰賽',
+  'ViuTV Free Matches': 'ViuTV 免費直播',
+  'FIFA World Cup 2026™': 'FIFA 世界盃 2026™',
+  'Data: openfootball · Not affiliated with FIFA': '資料：openfootball · 與FIFA無關',
+  'Free': '免費',
+  'HKT': 'HKT',
+  'UTC': 'UTC',
+  'FIFA': 'FIFA',
+  'Mexico': '墨西哥',
+  'South Africa': '南非',
+  '12 Jun 03:00 HKT': '6月12日 03:00 HKT',
 }
 
 export type Lang = 'en' | 'zh'

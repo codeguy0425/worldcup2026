@@ -41,7 +41,13 @@ export function Fixtures() {
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
             }`}
           >
-            {s.key === 'all' ? t('All') : s.label}
+            {s.key === 'all' ? t('All')
+              : s.key === 'group' ? t('Group')
+              : s.key === 'r32' ? t('R32')
+              : s.key === 'r16' ? t('R16')
+              : s.key === 'qf' ? t('QF')
+              : s.key === 'sf' ? t('SF')
+              : t('Final')}
           </button>
         ))}
       </div>

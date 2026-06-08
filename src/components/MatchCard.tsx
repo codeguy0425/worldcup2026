@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom'
 import { TeamBadge } from './TeamBadge'
 import { ViuTVBadge } from './ViuTVBadge'
 import { stadiums } from '../data/stadiums'
+import { useT } from '../i18n/LanguageContext'
 import type { Match } from '../types'
 
 export function MatchCard({ match }: { match: Match }) {
+  const t = useT()
   const dateLabel = match.date.slice(5)
   const hkTime = match.time
 
@@ -26,7 +28,7 @@ export function MatchCard({ match }: { match: Match }) {
                 {match.score1} – {match.score2}
               </span>
             ) : (
-              <span className="text-xs text-gray-400 font-medium">VS</span>
+              <span className="text-xs text-gray-400 font-medium">{t('VS')}</span>
             )}
           </div>
           <div className="flex-1 text-left">

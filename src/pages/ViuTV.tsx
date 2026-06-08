@@ -50,7 +50,7 @@ export function ViuTV() {
 
       {Object.entries(grouped).map(([date, ms]) => {
         const d = new Date(date + 'T00:00:00')
-        const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()]
+        const dayName = [t('Sunday'),t('Monday'),t('Tuesday'),t('Wednesday'),t('Thursday'),t('Friday'),t('Saturday')][d.getDay()]
         const days = ['日','一','二','三','四','五','六']
         const dayCn = days[d.getDay()]
 
@@ -72,7 +72,7 @@ export function ViuTV() {
                     </div>
                     <div className="text-center min-w-[80px]">
                       <span className="text-lg font-bold text-red-500">{m.hkTime}</span>
-                      <p className="text-xs text-gray-400">HKT</p>
+                      <p className="text-xs text-gray-400">{t('HKT')}</p>
                     </div>
                     <div className="flex-1 text-left">
                       <TeamBadge teamId={m.team2Id} />

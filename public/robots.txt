@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://codeguy0425.github.io/worldcup2026/sitemap.xml

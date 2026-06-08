@@ -18,12 +18,16 @@ export function Layout() {
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <span>🏆</span>
-            <span>World Cup 2026</span>
+            <span>{t('World Cup 2026')}</span>
           </h1>
           <button
             onClick={toggleLang}
-            className="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded-full transition-colors"
+            className="text-xs bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded-full transition-colors flex items-center gap-1"
           >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
             中文/EN
           </button>
         </div>

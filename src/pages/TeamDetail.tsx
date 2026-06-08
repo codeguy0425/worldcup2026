@@ -31,9 +31,9 @@ export function TeamDetail() {
         <div className="flex items-center justify-center gap-3 mt-2 text-xs text-gray-400">
           <span>{t('Group')} {team.group}</span>
           <span>•</span>
-          <span>FIFA #{team.ranking}</span>
+          <span>{t('FIFA')} #{team.ranking}</span>
           <span>•</span>
-          <span>{team.continent}</span>
+          <span>{t(team.continent)}</span>
         </div>
       </div>
 

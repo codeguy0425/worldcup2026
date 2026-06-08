@@ -18,7 +18,7 @@ export function Groups() {
           >
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-lg">{g.name} {g.nameZh}</h3>
-              <span className="text-xs text-gray-400">{g.teams.length} teams</span>
+              <span className="text-xs text-gray-400">{g.teams.length} {t('teams')}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {g.teams.map(tid => (

@@ -21,13 +21,14 @@ export function MatchDetail() {
   }
 
   const stadium = stadiums.find(s => s.id === match.groundId)
-  const stageLabel = match.stage === 'group' ? match.group
-    : match.stage === 'r32' ? 'Round of 32'
-    : match.stage === 'r16' ? 'Round of 16'
-    : match.stage === 'qf' ? 'Quarter-final'
-    : match.stage === 'sf' ? 'Semi-final'
-    : match.stage === 'third' ? 'Third Place'
-    : 'Final'
+  const stageLabel = match.stage === 'group'
+    ? t('Group') + ' ' + match.group
+    : t(match.stage === 'r32' ? 'Round of 32'
+      : match.stage === 'r16' ? 'Round of 16'
+      : match.stage === 'qf' ? 'Quarter-final'
+      : match.stage === 'sf' ? 'Semi-final'
+      : match.stage === 'third' ? 'Third Place'
+      : 'Final')
 
   return (
     <div className="space-y-4">
@@ -43,7 +44,7 @@ export function MatchDetail() {
               {match.score1 ?? '–'}
             </span>
           </div>
-          <span className="text-gray-300 text-sm font-medium">VS</span>
+          <span className="text-gray-300 text-sm font-medium">{t('VS')}</span>
           <div className="flex flex-col items-center gap-2">
             <TeamBadge teamId={match.team2Id} size="lg" />
             <span className="text-3xl font-bold tabular-nums">
@@ -53,7 +54,7 @@ export function MatchDetail() {
         </div>
 
         <p className="text-sm text-gray-500">{hkDisplay(match.date, match.time)}</p>
-        <p className="text-xs text-gray-400">{match.date} {match.timeUtc} UTC</p>
+        <p className="text-xs text-gray-400">{match.date} {match.timeUtc} {t('UTC')}</p>
 
         {match.viutv && (
           <div className="mt-3 flex justify-center">

@@ -42,7 +42,7 @@ export function GroupDetail() {
           <GroupTable standings={standings} />
         ) : (
           <div className="text-center py-6 text-gray-400 text-sm">
-            <p>Standings will appear after matches begin</p>
+            <p>{t('Standings will appear after matches begin')}</p>
           </div>
         )}
       </div>
