@@ -4,10 +4,11 @@ import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { hkDisplay } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
-import { useT } from '../i18n/LanguageContext'
+import { useT, useLang } from '../i18n/LanguageContext'
 
 export function MatchDetail() {
   const t = useT()
+  const lang = useLang()
   const { id } = useParams()
   const match = useMatchById(Number(id))
 
@@ -21,8 +22,8 @@ export function MatchDetail() {
   }
 
   const stadium = stadiums.find(s => s.id === match.groundId)
-  const stageLabel = match.stage === 'group'
-    ? t('Group') + ' ' + match.group
+  const stageLabel = match.stage === 'group' && match.group
+    ? `${t('Group Stage')} ${match.group.replace('Group ', '')}${lang === 'zh' ? '組' : ''}`
     : t(match.stage === 'r32' ? 'Round of 32'
       : match.stage === 'r16' ? 'Round of 16'
       : match.stage === 'qf' ? 'Quarter-final'

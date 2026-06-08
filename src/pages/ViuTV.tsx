@@ -7,7 +7,7 @@ import { useT, useLang } from '../i18n/LanguageContext'
 
 function matchTypeLabel(stage: string, group: string | undefined, t: (k: string) => string, lang: 'en' | 'zh'): string {
   if (stage === 'group') {
-    return `${t('Group Stage')} ${group}${lang === 'zh' ? '組' : ''}`
+    return `${t('Group Stage')} ${group?.replace('Group ', '')}${lang === 'zh' ? '組' : ''}`
   }
   const labels: Record<string, string> = {
     r32: t('Round of 32'),
