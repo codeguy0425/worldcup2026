@@ -18,7 +18,7 @@ export const zh: Record<string, string> = {
   'Live': '進行中',
   'Finished': '已結束',
   'All': '全部',
-  'Group Stage': '分組賽',
+  'Group Stage': '小組賽',
   'Round of 32': '32強',
   'Round of 16': '16強',
   'Quarter-final': '八強',

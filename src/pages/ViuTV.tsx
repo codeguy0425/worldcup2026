@@ -3,10 +3,26 @@ import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { CountdownTimer } from '../components/CountdownTimer'
 import { stadiums } from '../data/stadiums'
-import { useT } from '../i18n/LanguageContext'
+import { useT, useLang } from '../i18n/LanguageContext'
+
+function matchTypeLabel(stage: string, group: string | undefined, t: (k: string) => string, lang: 'en' | 'zh'): string {
+  if (stage === 'group') {
+    return `${t('Group Stage')} ${group}${lang === 'zh' ? '組' : ''}`
+  }
+  const labels: Record<string, string> = {
+    r32: t('Round of 32'),
+    r16: t('Round of 16'),
+    qf: t('Quarter-final'),
+    sf: t('Semi-final'),
+    third: t('Third Place'),
+    final: t('Final'),
+  }
+  return labels[stage] || stage
+}
 
 export function ViuTV() {
   const t = useT()
+  const lang = useLang()
   const matches = useViuTVMatches()
 
   const grouped = matches.reduce<Record<string, typeof matches>>((acc, m) => {
@@ -47,7 +63,7 @@ export function ViuTV() {
               {ms.map(m => (
                 <div key={m.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-400">{m.stage}</span>
+                    <span className="text-xs text-gray-400">{matchTypeLabel(m.stage, m.group, t, lang)}</span>
                     <ViuTVBadge size="sm" />
                   </div>
                   <div className="flex items-center justify-between gap-2 mb-2">
