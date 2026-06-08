@@ -9,6 +9,20 @@
     <title>World Cup 2026 世界盃</title>
   </head>
   <body>
+    <script>
+      (function() {
+        var redirect = sessionStorage.getItem('redirect')
+        if (redirect) {
+          sessionStorage.removeItem('redirect')
+          var base = '/worldcup2026/'
+          var idx = redirect.indexOf(base)
+          if (idx !== -1) {
+            var path = redirect.substring(idx + base.length - 1)
+            history.replaceState(null, '', path)
+          }
+        }
+      })()
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
