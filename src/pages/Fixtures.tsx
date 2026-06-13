@@ -55,16 +55,18 @@ export function Fixtures() {
       {Object.entries(grouped).length === 0 ? (
         <p className="text-center text-gray-400 py-8">{t('No matches found')}</p>
       ) : (
-        Object.entries(grouped).map(([date, ms]) => (
-          <div key={date}>
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-              {date.slice(5)}
-            </h3>
-            <div className="space-y-2">
-              {ms.map(m => <MatchCard key={m.id} match={m} />)}
+        Object.entries(grouped)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([date, ms]) => (
+            <div key={date}>
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                {date.slice(5)}
+              </h3>
+              <div className="space-y-2">
+                {ms.sort((a, b) => a.time.localeCompare(b.time)).map(m => <MatchCard key={m.id} match={m} />)}
+              </div>
             </div>
-          </div>
-        ))
+          ))
       )}
     </div>
   )
