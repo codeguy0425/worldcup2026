@@ -9,14 +9,14 @@ export function GroupTable({ standings }: { standings: GroupStanding[] }) {
         <thead>
           <tr className="text-xs text-gray-500 dark:text-gray-400 border-b dark:border-gray-700">
             <th className="text-left py-2 pr-2">{t('Team')}</th>
-            <th className="text-center px-1">{t('PL')}</th>
-            <th className="text-center px-1">{t('W')}</th>
-            <th className="text-center px-1">{t('D')}</th>
-            <th className="text-center px-1">{t('L')}</th>
-            <th className="text-center px-1">{t('GF')}</th>
-            <th className="text-center px-1">{t('GA')}</th>
-            <th className="text-center px-1">{t('GD')}</th>
-            <th className="text-center pl-1 font-bold">{t('PTS')}</th>
+            <th className="text-center w-8 px-1">{t('PL')}</th>
+            <th className="text-center w-8 px-1">{t('W')}</th>
+            <th className="text-center w-8 px-1">{t('D')}</th>
+            <th className="text-center w-8 px-1">{t('L')}</th>
+            <th className="text-center w-8 px-1">{t('GF')}</th>
+            <th className="text-center w-8 px-1">{t('GA')}</th>
+            <th className="text-center w-8 px-1">{t('GD')}</th>
+            <th className="text-center w-8 px-1 font-bold">{t('PTS')}</th>
           </tr>
         </thead>
         <tbody>
@@ -28,14 +28,14 @@ export function GroupTable({ standings }: { standings: GroupStanding[] }) {
                   <span className="truncate max-w-[100px]">{s.team}</span>
                 </div>
               </td>
-              <td className="text-center px-1">{s.played}</td>
-              <td className="text-center px-1 text-green-600">{s.won}</td>
-              <td className="text-center px-1 text-yellow-600">{s.drawn}</td>
-              <td className="text-center px-1 text-red-500">{s.lost}</td>
-              <td className="text-center px-1">{s.gf}</td>
-              <td className="text-center px-1">{s.ga}</td>
-              <td className="text-center px-1 font-mono">{s.gd > 0 ? '+' : ''}{s.gd}</td>
-              <td className="text-center pl-1 font-bold">{s.pts}</td>
+              <td className="text-center w-8 px-1">{s.played}</td>
+              <td className="text-center w-8 px-1 text-green-600">{s.won}</td>
+              <td className="text-center w-8 px-1 text-yellow-600">{s.drawn}</td>
+              <td className="text-center w-8 px-1 text-red-500">{s.lost}</td>
+              <td className="text-center w-8 px-1">{s.gf}</td>
+              <td className="text-center w-8 px-1">{s.ga}</td>
+              <td className="text-center w-8 px-1 font-mono">{s.gd > 0 ? '+' : ''}{s.gd}</td>
+              <td className="text-center w-8 px-1 font-bold">{s.pts}</td>
             </tr>
           ))}
         </tbody>
