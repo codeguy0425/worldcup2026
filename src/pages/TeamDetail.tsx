@@ -18,7 +18,7 @@ export function TeamDetail() {
     )
   }
 
-  const teamMatches = allMatches.filter(m => m.team1Id === team.name || m.team2Id === team.name)
+  const teamMatches = allMatches.filter(m => m.team1Id === team.id || m.team2Id === team.id)
 
   return (
     <div className="space-y-4">
