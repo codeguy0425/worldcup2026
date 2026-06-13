@@ -25,7 +25,7 @@ export function GroupTable({ standings }: { standings: GroupStanding[] }) {
               <td className="py-2 pr-2">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs text-gray-400 w-4">{i + 1}</span>
-                  <span className="truncate max-w-[100px]">{s.team}</span>
+                  <span className="truncate max-w-[80px]">{s.team}</span>
                 </div>
               </td>
               <td className="text-center w-8 px-1">{s.played}</td>
