@@ -23,7 +23,8 @@ async function main() {
   const res = await fetch(OPENFOOTBALL_URL)
   if (!res.ok) throw new Error(`HTTP ${res.status} fetching openfootball data`)
   const data = await res.json()
-  console.log(`  ${data.matches.length} total matches in source`)
+  const withScores = data.matches.filter(m => m.score?.ft?.length === 2)
+  console.log(`  ${data.matches.length} total matches in source, ${withScores.length} with scores`)
 
   const byNum = new Map()
   const byTeamKey = new Map()
@@ -67,11 +68,11 @@ async function main() {
     const resolvedT1 = TEAM_IDS[ofm.team1]
     const resolvedT2 = TEAM_IDS[ofm.team2]
 
-    if (ofm.score1 !== undefined && ofm.score2 !== undefined) {
+    if (ofm.score?.ft?.length === 2) {
       if (/score1:\s*\d+/.test(line)) {
-        lines[i] = lines[i].replace(/score1: \d+, score2: \d+/g, `score1: ${ofm.score1}, score2: ${ofm.score2}`)
+        lines[i] = lines[i].replace(/score1: \d+, score2: \d+/g, `score1: ${ofm.score.ft[0]}, score2: ${ofm.score.ft[1]}`)
       } else {
-        lines[i] = lines[i].replace(/team2Id: '[^']+'/, `$&, score1: ${ofm.score1}, score2: ${ofm.score2}`)
+        lines[i] = lines[i].replace(/team2Id: '[^']+'/, `$&, score1: ${ofm.score.ft[0]}, score2: ${ofm.score.ft[1]}`)
       }
       updatedScores++
     }

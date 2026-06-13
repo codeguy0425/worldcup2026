@@ -1,13 +1,13 @@
 import type { Match } from '../types'
 
 export const matches: Match[] = [
-  { id: 1, round: 'Matchday 1', date: '2026-06-11', time: '03:00', timeUtc: '19:00', team1Id: 'MEX', team2Id: 'RSA', group: 'Group A', groundId: 'mexico_city', num: 1, stage: 'group' },
-  { id: 2, round: 'Matchday 1', date: '2026-06-11', time: '10:00', timeUtc: '02:00', team1Id: 'KOR', team2Id: 'CZE', group: 'Group A', groundId: 'guadalajara', num: 2, stage: 'group' },
+  { id: 1, round: 'Matchday 1', date: '2026-06-11', time: '03:00', timeUtc: '19:00', team1Id: 'MEX', team2Id: 'RSA', group: 'Group A', groundId: 'mexico_city', num: 1, score1: 2, score2: 0, stage: 'group' },
+  { id: 2, round: 'Matchday 1', date: '2026-06-11', time: '10:00', timeUtc: '02:00', team1Id: 'KOR', team2Id: 'CZE', group: 'Group A', groundId: 'guadalajara', num: 2, score1: 2, score2: 1, stage: 'group' },
   { id: 3, round: 'Matchday 8', date: '2026-06-18', time: '00:00', timeUtc: '16:00', team1Id: 'CZE', team2Id: 'RSA', group: 'Group A', groundId: 'atlanta', num: 3, stage: 'group' },
   { id: 4, round: 'Matchday 8', date: '2026-06-18', time: '09:00', timeUtc: '01:00', team1Id: 'MEX', team2Id: 'KOR', group: 'Group A', groundId: 'guadalajara', num: 4, stage: 'group' },
   { id: 5, round: 'Matchday 14', date: '2026-06-24', time: '09:00', timeUtc: '01:00', team1Id: 'CZE', team2Id: 'MEX', group: 'Group A', groundId: 'mexico_city', num: 5, stage: 'group' },
   { id: 6, round: 'Matchday 14', date: '2026-06-24', time: '09:00', timeUtc: '01:00', team1Id: 'RSA', team2Id: 'KOR', group: 'Group A', groundId: 'monterrey', num: 6, stage: 'group' },
-  { id: 7, round: 'Matchday 2', date: '2026-06-12', time: '03:00', timeUtc: '19:00', team1Id: 'CAN', team2Id: 'BIH', group: 'Group B', groundId: 'toronto', num: 7, stage: 'group' },
+  { id: 7, round: 'Matchday 2', date: '2026-06-12', time: '03:00', timeUtc: '19:00', team1Id: 'CAN', team2Id: 'BIH', group: 'Group B', groundId: 'toronto', num: 7, score1: 1, score2: 1, stage: 'group' },
   { id: 8, round: 'Matchday 3', date: '2026-06-13', time: '03:00', timeUtc: '19:00', team1Id: 'QAT', team2Id: 'SUI', group: 'Group B', groundId: 'san_francisco', num: 8, stage: 'group' },
   { id: 9, round: 'Matchday 8', date: '2026-06-18', time: '03:00', timeUtc: '19:00', team1Id: 'SUI', team2Id: 'BIH', group: 'Group B', groundId: 'los_angeles', num: 9, stage: 'group' },
   { id: 10, round: 'Matchday 8', date: '2026-06-18', time: '06:00', timeUtc: '22:00', team1Id: 'CAN', team2Id: 'QAT', group: 'Group B', groundId: 'vancouver', num: 10, stage: 'group' },
@@ -19,7 +19,7 @@ export const matches: Match[] = [
   { id: 16, round: 'Matchday 9', date: '2026-06-19', time: '08:30', timeUtc: '00:30', team1Id: 'BRA', team2Id: 'HAI', group: 'Group C', groundId: 'philadelphia', num: 16, stage: 'group' },
   { id: 17, round: 'Matchday 14', date: '2026-06-24', time: '06:00', timeUtc: '22:00', team1Id: 'SCO', team2Id: 'BRA', group: 'Group C', groundId: 'miami', num: 17, stage: 'group' },
   { id: 18, round: 'Matchday 14', date: '2026-06-24', time: '06:00', timeUtc: '22:00', team1Id: 'MAR', team2Id: 'HAI', group: 'Group C', groundId: 'atlanta', num: 18, stage: 'group' },
-  { id: 19, round: 'Matchday 2', date: '2026-06-12', time: '09:00', timeUtc: '01:00', team1Id: 'USA', team2Id: 'PAR', group: 'Group D', groundId: 'los_angeles', num: 19, stage: 'group' },
+  { id: 19, round: 'Matchday 2', date: '2026-06-12', time: '09:00', timeUtc: '01:00', team1Id: 'USA', team2Id: 'PAR', group: 'Group D', groundId: 'los_angeles', num: 19, score1: 4, score2: 1, stage: 'group' },
   { id: 20, round: 'Matchday 3', date: '2026-06-13', time: '12:00', timeUtc: '04:00', team1Id: 'AUS', team2Id: 'TUR', group: 'Group D', groundId: 'vancouver', num: 20, stage: 'group' },
   { id: 21, round: 'Matchday 9', date: '2026-06-19', time: '03:00', timeUtc: '19:00', team1Id: 'USA', team2Id: 'AUS', group: 'Group D', groundId: 'seattle', num: 21, stage: 'group' },
   { id: 22, round: 'Matchday 9', date: '2026-06-19', time: '11:00', timeUtc: '03:00', team1Id: 'TUR', team2Id: 'PAR', group: 'Group D', groundId: 'san_francisco', num: 22, stage: 'group' },

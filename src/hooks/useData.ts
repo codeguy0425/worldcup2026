@@ -44,8 +44,8 @@ export function useStandings(groupId: string) {
     const computedIds = new Set(computed.map(s => s.team))
     if (groupInfo) {
       for (const tid of groupInfo.teams) {
-        if (!computedIds.has(tid)) {
-          const team = teams.find(t => t.id === tid)
+        const team = teams.find(t => t.id === tid)
+        if (!computedIds.has(team?.name || tid)) {
           computed.push({
             team: team?.name || tid,
             teamZh: team?.nameZh || tid,
