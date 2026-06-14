@@ -4,6 +4,7 @@ import { useT, useToggleLang, useLang } from '../i18n/LanguageContext'
 const links = [
   { to: '/teams', label: 'Teams', desc: '48 teams, groups & rankings' },
   { to: '/stadiums', label: 'Stadiums', desc: '16 venues across 3 countries' },
+  { to: '/top-scorers', label: 'Top Scorers', desc: 'Golden boot ranking' },
   { to: '/bracket', label: 'Knockout Bracket', desc: 'Round of 32 to the Final' },
   { to: '/viutv', label: 'ViuTV Free Matches', desc: '25 free matches schedule' },
 ]
@@ -37,7 +38,7 @@ export function More() {
       </div>
       <div className="space-y-2">
         {links.map(link => {
-          const icons: Record<string, string> = { '/teams': '👥', '/stadiums': '🏟️', '/bracket': '🔀', '/viutv': '📺' }
+            const icons: Record<string, string> = { '/teams': '👥', '/stadiums': '🏟️', '/top-scorers': '⚽', '/bracket': '🔀', '/viutv': '📺' }
           return (
             <Link
               key={link.to}

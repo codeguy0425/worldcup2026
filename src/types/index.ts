@@ -1,3 +1,13 @@
+export interface GoalEvent {
+  minute: number
+  stoppageTime?: number
+  scorer: string
+  teamId: string
+  assist?: string
+  ownGoal?: boolean
+  penalty?: boolean
+}
+
 export interface Match {
   id: number
   round: string
@@ -12,6 +22,7 @@ export interface Match {
   score1?: number
   score2?: number
   viutv?: boolean
+  goals?: GoalEvent[]
   stage: 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'third' | 'final'
 }
 

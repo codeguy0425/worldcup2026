@@ -5,6 +5,7 @@ import { Fixtures } from './pages/Fixtures'
 import { MatchDetail } from './pages/MatchDetail'
 import { Groups } from './pages/Groups'
 import { GroupDetail } from './pages/GroupDetail'
+import { TopScorers } from './pages/TopScorers'
 import { Teams } from './pages/Teams'
 import { TeamDetail } from './pages/TeamDetail'
 import { StadiumsPage } from './pages/Stadiums'
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/groups/:id" element={<GroupDetail />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/teams/:name" element={<TeamDetail />} />
+          <Route path="/top-scorers" element={<TopScorers />} />
           <Route path="/stadiums" element={<StadiumsPage />} />
           <Route path="/bracket" element={<Bracket />} />
           <Route path="/viutv" element={<ViuTV />} />
