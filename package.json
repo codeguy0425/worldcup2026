@@ -8,8 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "update-scores": "node scripts/update-scores.mjs",
-    "gen-sitemap": "node scripts/gen-sitemap.mjs"
+    "gen-sitemap": "node scripts/gen-sitemap.mjs",
+    "deploy:trigger": "gh workflow run \"Deploy to GitHub Pages\"",
+    "update-scores": "node scripts/update-scores.mjs"
   },
   "dependencies": {
     "react": "^19.2.6",
