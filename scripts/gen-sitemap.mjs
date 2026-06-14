@@ -1,19 +1,5 @@
 import { writeFileSync } from 'fs'
-
-const teams = [
-  { id:'MEX', name:'Mexico' }, { id:'RSA', name:'South Africa' }, { id:'KOR', name:'South Korea' }, { id:'CZE', name:'Czech Republic' },
-  { id:'CAN', name:'Canada' }, { id:'BIH', name:'Bosnia & Herzegovina' }, { id:'QAT', name:'Qatar' }, { id:'SUI', name:'Switzerland' },
-  { id:'BRA', name:'Brazil' }, { id:'MAR', name:'Morocco' }, { id:'HAI', name:'Haiti' }, { id:'SCO', name:'Scotland' },
-  { id:'USA', name:'USA' }, { id:'PAR', name:'Paraguay' }, { id:'AUS', name:'Australia' }, { id:'TUR', name:'Turkey' },
-  { id:'GER', name:'Germany' }, { id:'CUW', name:'Curaçao' }, { id:'CIV', name:'Ivory Coast' }, { id:'ECU', name:'Ecuador' },
-  { id:'NED', name:'Netherlands' }, { id:'JPN', name:'Japan' }, { id:'SWE', name:'Sweden' }, { id:'TUN', name:'Tunisia' },
-  { id:'BEL', name:'Belgium' }, { id:'EGY', name:'Egypt' }, { id:'IRN', name:'Iran' }, { id:'NZL', name:'New Zealand' },
-  { id:'ESP', name:'Spain' }, { id:'CPV', name:'Cape Verde' }, { id:'KSA', name:'Saudi Arabia' }, { id:'URU', name:'Uruguay' },
-  { id:'FRA', name:'France' }, { id:'SEN', name:'Senegal' }, { id:'IRQ', name:'Iraq' }, { id:'NOR', name:'Norway' },
-  { id:'ARG', name:'Argentina' }, { id:'ALG', name:'Algeria' }, { id:'AUT', name:'Austria' }, { id:'JOR', name:'Jordan' },
-  { id:'POR', name:'Portugal' }, { id:'COD', name:'DR Congo' }, { id:'UZB', name:'Uzbekistan' }, { id:'COL', name:'Colombia' },
-  { id:'ENG', name:'England' }, { id:'CRO', name:'Croatia' }, { id:'GHA', name:'Ghana' }, { id:'PAN', name:'Panama' },
-]
+import { teams } from './shared-data.mjs'
 
 const base = 'https://codeguy0425.github.io/worldcup2026'
 

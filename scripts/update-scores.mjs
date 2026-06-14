@@ -1,21 +1,48 @@
 import fs from 'fs'
+import { TEAM_IDS } from './shared-data.mjs'
 
 const OPENFOOTBALL_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
 const MATCHES_FILE = 'src/data/matches.ts'
 
-const TEAM_IDS = {
-  'Mexico': 'MEX', 'South Africa': 'RSA', 'South Korea': 'KOR', 'Czech Republic': 'CZE',
-  'Canada': 'CAN', 'Bosnia & Herzegovina': 'BIH', 'Qatar': 'QAT', 'Switzerland': 'SUI',
-  'Brazil': 'BRA', 'Morocco': 'MAR', 'Haiti': 'HAI', 'Scotland': 'SCO',
-  'USA': 'USA', 'Paraguay': 'PAR', 'Australia': 'AUS', 'Turkey': 'TUR',
-  'Germany': 'GER', 'Curaçao': 'CUW', 'Ivory Coast': 'CIV', 'Ecuador': 'ECU',
-  'Netherlands': 'NED', 'Japan': 'JPN', 'Sweden': 'SWE', 'Tunisia': 'TUN',
-  'Belgium': 'BEL', 'Egypt': 'EGY', 'Iran': 'IRN', 'New Zealand': 'NZL',
-  'Spain': 'ESP', 'Cape Verde': 'CPV', 'Saudi Arabia': 'KSA', 'Uruguay': 'URU',
-  'France': 'FRA', 'Senegal': 'SEN', 'Iraq': 'IRQ', 'Norway': 'NOR',
-  'Argentina': 'ARG', 'Algeria': 'ALG', 'Austria': 'AUT', 'Jordan': 'JOR',
-  'Portugal': 'POR', 'DR Congo': 'COD', 'Uzbekistan': 'UZB', 'Colombia': 'COL',
-  'England': 'ENG', 'Croatia': 'CRO', 'Ghana': 'GHA', 'Panama': 'PAN',
+function parseMinute(str) {
+  const parts = String(str).split('+')
+  const minute = parseInt(parts[0])
+  const stoppageTime = parts[1] ? parseInt(parts[1]) : undefined
+  return { minute, stoppageTime }
+}
+
+function buildGoalsString(ofm, team1Id, team2Id) {
+  const goals1 = ofm.goals1 || []
+  const goals2 = ofm.goals2 || []
+  if (goals1.length === 0 && goals2.length === 0) return null
+  const esc = s => s.replace(/'/g, "\\'")
+  const items = []
+  for (const g of goals1) {
+    const { minute, stoppageTime } = parseMinute(g.minute)
+    const parts = [`minute: ${minute}`]
+    if (stoppageTime !== undefined) parts.push(`stoppageTime: ${stoppageTime}`)
+    parts.push(`scorer: '${esc(g.name)}'`, `teamId: '${team1Id}'`)
+    if (g.owngoal) parts.push('ownGoal: true')
+    if (g.penalty) parts.push('penalty: true')
+    items.push(`{ ${parts.join(', ')} }`)
+  }
+  for (const g of goals2) {
+    const { minute, stoppageTime } = parseMinute(g.minute)
+    const parts = [`minute: ${minute}`]
+    if (stoppageTime !== undefined) parts.push(`stoppageTime: ${stoppageTime}`)
+    parts.push(`scorer: '${esc(g.name)}'`, `teamId: '${team2Id}'`)
+    if (g.owngoal) parts.push('ownGoal: true')
+    if (g.penalty) parts.push('penalty: true')
+    items.push(`{ ${parts.join(', ')} }`)
+  }
+  items.sort((a, b) => {
+    const ma = a.match(/minute: (\d+)/)?.[1] ?? 0
+    const sa = a.match(/stoppageTime: (\d+)/)?.[1] ?? 0
+    const mb = b.match(/minute: (\d+)/)?.[1] ?? 0
+    const sb = b.match(/stoppageTime: (\d+)/)?.[1] ?? 0
+    return (+ma * 60 + +sa) - (+mb * 60 + +sb)
+  })
+  return `goals: [${items.join(', ')}]`
 }
 
 async function main() {
@@ -46,10 +73,11 @@ async function main() {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const idMatch = line.match(/\b id: (\d+),/)
+    const idMatch = line.match(/ id: (\d+),/)
     if (!idMatch) continue
 
     const matchId = parseInt(idMatch[1])
+
     let ofm = byNum.get(matchId)
 
     if (!ofm) {
@@ -67,7 +95,6 @@ async function main() {
     const curT2 = line.match(/team2Id: '([^']+)'/)?.[1]
     const resolvedT1 = TEAM_IDS[ofm.team1]
     const resolvedT2 = TEAM_IDS[ofm.team2]
-
     if (ofm.score?.ft?.length === 2) {
       if (/score1:\s*\d+/.test(line)) {
         lines[i] = lines[i].replace(/score1: \d+, score2: \d+/g, `score1: ${ofm.score.ft[0]}, score2: ${ofm.score.ft[1]}`)
@@ -75,6 +102,18 @@ async function main() {
         lines[i] = lines[i].replace(/team2Id: '[^']+'/, `$&, score1: ${ofm.score.ft[0]}, score2: ${ofm.score.ft[1]}`)
       }
       updatedScores++
+      if ('goals1' in ofm || 'goals2' in ofm) {
+        const goalsStr = buildGoalsString(ofm, resolvedT1 || curT1, resolvedT2 || curT2)
+        if (goalsStr) {
+          if (/goals: \[/.test(lines[i])) {
+            lines[i] = lines[i].replace(/goals: \[[^\]]*\]/, goalsStr)
+          } else {
+            lines[i] = lines[i].replace(/(, stage: ')/, `, ${goalsStr}$1`)
+          }
+        } else {
+          lines[i] = lines[i].replace(/, goals: \[[^\]]*\]/, '')
+        }
+      }
     }
 
     if (curT1 && resolvedT1 && curT1 !== resolvedT1) {

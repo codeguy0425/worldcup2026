@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "update-scores": "node scripts/update-scores.mjs"
+    "update-scores": "node scripts/update-scores.mjs",
+    "gen-sitemap": "node scripts/gen-sitemap.mjs"
   },
   "dependencies": {
     "react": "^19.2.6",

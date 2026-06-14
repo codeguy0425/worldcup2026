@@ -1,86 +1,15 @@
 import fs from 'fs'
-import { spawnSync } from 'child_process'
+import { execSync } from 'child_process'
+import { TEAM_NAMES, STADIUMS, STAGE_LABELS, VIUTV_MATCHES } from './shared-data.mjs'
 
 const MATCHES_FILE = 'src/data/matches.ts'
 const EVENT_IDS_FILE = 'scripts/.calendar-event-ids.json'
-
-const TEAM_NAMES = {
-  'MEX': 'Mexico', 'RSA': 'South Africa', 'KOR': 'South Korea', 'CZE': 'Czech Republic',
-  'CAN': 'Canada', 'BIH': 'Bosnia & Herzegovina', 'QAT': 'Qatar', 'SUI': 'Switzerland',
-  'BRA': 'Brazil', 'MAR': 'Morocco', 'HAI': 'Haiti', 'SCO': 'Scotland',
-  'USA': 'USA', 'PAR': 'Paraguay', 'AUS': 'Australia', 'TUR': 'Turkey',
-  'GER': 'Germany', 'CUW': 'Curaçao', 'CIV': 'Ivory Coast', 'ECU': 'Ecuador',
-  'NED': 'Netherlands', 'JPN': 'Japan', 'SWE': 'Sweden', 'TUN': 'Tunisia',
-  'BEL': 'Belgium', 'EGY': 'Egypt', 'IRN': 'Iran', 'NZL': 'New Zealand',
-  'ESP': 'Spain', 'CPV': 'Cape Verde', 'KSA': 'Saudi Arabia', 'URU': 'Uruguay',
-  'FRA': 'France', 'SEN': 'Senegal', 'IRQ': 'Iraq', 'NOR': 'Norway',
-  'ARG': 'Argentina', 'ALG': 'Algeria', 'AUT': 'Austria', 'JOR': 'Jordan',
-  'POR': 'Portugal', 'COD': 'DR Congo', 'UZB': 'Uzbekistan', 'COL': 'Colombia',
-  'ENG': 'England', 'CRO': 'Croatia', 'GHA': 'Ghana', 'PAN': 'Panama',
-}
-
-const STADIUMS = {
-  'mexico_city': { name: 'Estadio Azteca', city: 'Mexico City' },
-  'guadalajara': { name: 'Estadio Guadalajara', city: 'Guadalajara' },
-  'monterrey': { name: 'Estadio BBVA', city: 'Monterrey' },
-  'toronto': { name: 'BMO Field', city: 'Toronto' },
-  'vancouver': { name: 'BC Place', city: 'Vancouver' },
-  'los_angeles': { name: 'SoFi Stadium', city: 'Los Angeles' },
-  'new_york': { name: 'MetLife Stadium', city: 'New York/New Jersey' },
-  'dallas': { name: 'AT&T Stadium', city: 'Dallas' },
-  'kansas_city': { name: 'Arrowhead Stadium', city: 'Kansas City' },
-  'houston': { name: 'NRG Stadium', city: 'Houston' },
-  'atlanta': { name: 'Mercedes-Benz Stadium', city: 'Atlanta' },
-  'philadelphia': { name: 'Lincoln Financial Field', city: 'Philadelphia' },
-  'seattle': { name: 'Lumen Field', city: 'Seattle' },
-  'san_francisco': { name: "Levi's Stadium", city: 'San Francisco Bay Area' },
-  'boston': { name: 'Gillette Stadium', city: 'Boston' },
-  'miami': { name: 'Hard Rock Stadium', city: 'Miami' },
-}
-
-const STAGE_LABELS = {
-  'group': 'Group Stage',
-  'r32': 'Round of 32',
-  'r16': 'Round of 16',
-  'qf': 'Quarter-final',
-  'sf': 'Semi-final',
-  'third': 'Third Place',
-  'final': 'Final',
-}
-
-const VIUTV_MATCHES = [
-  { matchId: 1, hkDate: '2026-06-12', hkTime: '03:00' },
-  { matchId: 7, hkDate: '2026-06-13', hkTime: '03:00' },
-  { matchId: 19, hkDate: '2026-06-13', hkTime: '09:00' },
-  { matchId: 49, hkDate: '2026-06-17', hkTime: '03:00' },
-  { matchId: 62, hkDate: '2026-06-18', hkTime: '10:00' },
-  { matchId: 4, hkDate: '2026-06-19', hkTime: '09:00' },
-  { matchId: 21, hkDate: '2026-06-20', hkTime: '03:00' },
-  { matchId: 36, hkDate: '2026-06-21', hkTime: '12:00' },
-  { matchId: 40, hkDate: '2026-06-22', hkTime: '09:00' },
-  { matchId: 52, hkDate: '2026-06-23', hkTime: '08:00' },
-  { matchId: 58, hkDate: '2026-06-23', hkTime: '11:00' },
-  { matchId: 70, hkDate: '2026-06-24', hkTime: '07:00' },
-  { matchId: 64, hkDate: '2026-06-24', hkTime: '10:00' },
-  { matchId: 6, hkDate: '2026-06-25', hkTime: '09:00' },
-  { matchId: 23, hkDate: '2026-06-26', hkTime: '10:00' },
-  { matchId: 42, hkDate: '2026-06-27', hkTime: '11:00' },
-  { matchId: 89, hkDate: '2026-07-04', hkTime: '05:00' },
-  { matchId: 91, hkDate: '2026-07-05', hkTime: '04:00' },
-  { matchId: 93, hkDate: '2026-07-07', hkTime: '03:00' },
-  { matchId: 98, hkDate: '2026-07-10', hkTime: '03:00' },
-  { matchId: 100, hkDate: '2026-07-12', hkTime: '09:00' },
-  { matchId: 101, hkDate: '2026-07-14', hkTime: '03:00' },
-  { matchId: 102, hkDate: '2026-07-15', hkTime: '03:00' },
-  { matchId: 103, hkDate: '2026-07-19', hkTime: '05:00' },
-  { matchId: 104, hkDate: '2026-07-20', hkTime: '03:00' },
-]
 
 function readMatchData() {
   const content = fs.readFileSync(MATCHES_FILE, 'utf-8')
   const map = new Map()
   for (const line of content.split('\n')) {
-    const id = line.match(/\b id: (\d+),/)?.[1]
+    const id = line.match(/^\s*\{\s*id:\s*(\d+)/)?.[1]
     if (!id) continue
     map.set(parseInt(id), {
       team1Id: line.match(/team1Id: '([^']+)'/)?.[1],
@@ -94,13 +23,28 @@ function readMatchData() {
 
 function endTime(hkDate, hkTime) {
   const d = new Date(`${hkDate}T${hkTime}:00+08:00`)
-  d.setHours(d.getHours() + 2)
-  return d.toISOString().replace(/\.\d{3}Z$/, '+08:00')
+  const ms = d.getTime() + 2 * 3600000 + 8 * 3600000
+  const d2 = new Date(ms)
+  const y = d2.getUTCFullYear()
+  const m = String(d2.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(d2.getUTCDate()).padStart(2, '0')
+  const h = String(d2.getUTCHours()).padStart(2, '0')
+  const min = String(d2.getUTCMinutes()).padStart(2, '0')
+  return `${y}-${m}-${day}T${h}:${min}:00+08:00`
 }
 
 function gws(args) {
-  const r = spawnSync('gws', args, { encoding: 'utf-8', timeout: 15000 })
-  return { ok: r.status === 0, stdout: r.stdout?.trim() || '', stderr: r.stderr?.trim() || '' }
+  const parts = args.map(a => {
+    if (a.startsWith('-')) return a
+    return "'" + a.replace(/'/g, "''") + "'"
+  })
+  const cmd = 'gws ' + parts.join(' ')
+  try {
+    const out = execSync(cmd, { shell: 'powershell.exe', encoding: 'utf-8', timeout: 15000 })
+    return { ok: true, stdout: out?.trim() || '' }
+  } catch (e) {
+    return { ok: false, stderr: e.stderr?.toString()?.trim() || e.message }
+  }
 }
 
 function listExisting() {

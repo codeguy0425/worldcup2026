@@ -1,8 +1,17 @@
-import { spawnSync } from 'child_process'
+import { execSync } from 'child_process'
 
 function gws(args) {
-  const r = spawnSync('gws', args, { encoding: 'utf-8', timeout: 15000 })
-  return { ok: r.status === 0, stdout: r.stdout?.trim() || '', stderr: r.stderr?.trim() || '' }
+  const parts = args.map(a => {
+    if (a.startsWith('-')) return a
+    return "'" + a.replace(/'/g, "''") + "'"
+  })
+  const cmd = 'gws ' + parts.join(' ')
+  try {
+    const out = execSync(cmd, { shell: 'powershell.exe', encoding: 'utf-8', timeout: 15000 })
+    return { ok: true, stdout: out?.trim() || '' }
+  } catch (e) {
+    return { ok: false, stderr: e.stderr?.toString()?.trim() || e.message }
+  }
 }
 
 function listExisting() {
