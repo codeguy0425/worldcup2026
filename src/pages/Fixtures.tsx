@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMatches } from '../hooks/useData'
 import { MatchCard } from '../components/MatchCard'
+import { utcToHkt } from '../utils/hkTime'
 import { useT } from '../i18n/LanguageContext'
 
 const stages = [
@@ -22,9 +23,12 @@ export function Fixtures() {
     ? matches
     : matches.filter(m => m.stage === stageFilter || (stageFilter === 'final' && (m.stage === 'third' || m.stage === 'final')))
 
+  const hkDate = (m: typeof filtered[0]) => m.timeUtc ? utcToHkt(m.timeUtc, m.date).date : m.date
+
   const grouped = filtered.reduce<Record<string, typeof matches>>((acc, m) => {
-    if (!acc[m.date]) acc[m.date] = []
-    acc[m.date].push(m)
+    const key = hkDate(m)
+    if (!acc[key]) acc[key] = []
+    acc[key].push(m)
     return acc
   }, {})
 

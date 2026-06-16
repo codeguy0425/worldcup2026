@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
 import { TeamBadge } from './TeamBadge'
 import { ViuTVBadge } from './ViuTVBadge'
+import { utcToHkt } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
 import { useT } from '../i18n/LanguageContext'
 import type { Match } from '../types'
 
 export function MatchCard({ match }: { match: Match }) {
   const t = useT()
-  const dateLabel = match.date.slice(5)
-  const hkTime = match.time
+  const { date: hkDate, time: hkTime } = match.timeUtc ? utcToHkt(match.timeUtc, match.date) : { date: match.date, time: match.time }
+  const dateLabel = hkDate.slice(5)
 
   return (
     <Link to={`/match/${match.id}`} className="block">

@@ -1,5 +1,6 @@
 import { useMatches } from '../hooks/useData'
 import { Link } from 'react-router-dom'
+import { utcToHkt } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
 import { useT } from '../i18n/LanguageContext'
 
@@ -38,8 +39,8 @@ export function Bracket() {
                 <Link key={m.id} to={`/match/${m.id}`} className="block">
                   <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3 active:scale-[0.98] transition-transform">
                     <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                      <span>{m.date.slice(5)}</span>
-                      <span>{m.time} {t('HKT')}</span>
+                      <span>{(m.timeUtc ? utcToHkt(m.timeUtc, m.date).date : m.date).slice(5)}</span>
+                      <span>{(m.timeUtc ? utcToHkt(m.timeUtc, m.date).time : m.time)} {t('HKT')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="flex-1 text-right text-sm font-medium truncate">{m.team1Id}</span>

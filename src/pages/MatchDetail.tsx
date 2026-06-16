@@ -4,7 +4,7 @@ import { useMatchById } from '../hooks/useData'
 import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { teams } from '../data/teams'
-import { hkDisplay } from '../utils/hkTime'
+import { utcToHkt, hkDisplay } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
 import { useT, useLang } from '../i18n/LanguageContext'
 
@@ -41,6 +41,7 @@ export function MatchDetail() {
     )
   }
 
+  const hkt = match.timeUtc ? utcToHkt(match.timeUtc, match.date) : { date: match.date, time: match.time }
   const stadium = stadiums.find(s => s.id === match.groundId)
   const stageLabel = match.stage === 'group' && match.group
     ? `${t('Group Stage')} ${match.group.replace('Group ', '')}${lang === 'zh' ? '組' : ''}`
@@ -74,7 +75,7 @@ export function MatchDetail() {
           </div>
         </div>
 
-        <p className="text-sm text-gray-500">{hkDisplay(match.date, match.time)}</p>
+        <p className="text-sm text-gray-500">{hkDisplay(hkt.date, hkt.time)}</p>
         <p className="text-xs text-gray-400">{match.date} {match.timeUtc} {t('UTC')}</p>
 
         {match.viutv && (
