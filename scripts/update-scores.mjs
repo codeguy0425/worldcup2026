@@ -61,7 +61,8 @@ async function main() {
     const t2 = TEAM_IDS[m.team2]
     if (m.num) byNum.set(m.num, m)
     if (t1 && t2) {
-      byTeamKey.set(`${m.date}|${t1}|${t2}`, m)
+      byTeamKey.set(`${t1}|${t2}`, m)
+      byTeamKey.set(`${t2}|${t1}`, m)
     }
   }
 
@@ -83,9 +84,8 @@ async function main() {
     if (!ofm) {
       const t1 = line.match(/team1Id: '([^']+)'/)
       const t2 = line.match(/team2Id: '([^']+)'/)
-      const date = line.match(/date: '([^']+)'/)
-      if (t1 && t2 && date) {
-        ofm = byTeamKey.get(`${date[1]}|${t1[1]}|${t2[1]}`)
+      if (t1 && t2) {
+        ofm = byTeamKey.get(`${t1[1]}|${t2[1]}`)
       }
     }
 
