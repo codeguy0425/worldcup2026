@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useMatches } from '../hooks/useData'
 import { MatchCard } from '../components/MatchCard'
 import { CountdownTimer } from '../components/CountdownTimer'
+import { utcToHkt } from '../utils/hkTime'
 import { useT } from '../i18n/LanguageContext'
 
 export function Home() {
@@ -9,15 +10,20 @@ export function Home() {
   const allMatches = useMatches()
 
   const now = new Date()
-  const today = now.toISOString().slice(0, 10)
+  const nowUtc = now.toISOString()
+  const todayHkt = utcToHkt(nowUtc.slice(11, 16), nowUtc.slice(0, 10)).date
+
+  const hkDate = (m: typeof allMatches[0]) => m.timeUtc ? utcToHkt(m.timeUtc, m.date).date : m.date
 
   const sorted = [...allMatches].sort((a, b) => {
-    if (a.date !== b.date) return a.date.localeCompare(b.date)
+    const ha = hkDate(a)
+    const hb = hkDate(b)
+    if (ha !== hb) return ha.localeCompare(hb)
     return a.time.localeCompare(b.time)
   })
 
-  const todayMatches = sorted.filter(m => m.date === today)
-  const upcoming = sorted.filter(m => m.date > today).slice(0, 5)
+  const todayMatches = sorted.filter(m => hkDate(m) === todayHkt)
+  const upcoming = sorted.filter(m => hkDate(m) > todayHkt).slice(0, 5)
   const hasMatches = todayMatches.length > 0 || upcoming.length > 0
 
   return (
