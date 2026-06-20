@@ -21,6 +21,12 @@
             history.replaceState(null, '', path)
           }
         }
+        // Force reload when new SW takes over
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
+            window.location.reload()
+          })
+        }
       })()
     </script>
     <div id="root"></div>
