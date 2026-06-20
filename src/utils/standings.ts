@@ -3,6 +3,14 @@ import { teams } from '../data/teams'
 
 const teamMap = new Map(teams.map(t => [t.id, t]))
 
+type Result = 0 | 1 | 2 // 0=home win, 1=draw, 2=away win
+
+function generateResults(n: number): Result[][] {
+  if (n === 0) return [[]]
+  const sub = generateResults(n - 1)
+  return sub.flatMap(r => [[0, ...r], [1, ...r], [2, ...r]])
+}
+
 export function computeStandings(group: string, matches: Match[]): GroupStanding[] {
   const teamIds = new Set<string>()
   const groupMatches = matches.filter(m =>
@@ -65,58 +73,67 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
     }
   }
 
+  // Generate all possible remaining match outcomes
+  const allResults = generateResults(remainingMatches.length)
+  const teamIdsList = Array.from(teamIds)
+
+  // For each team, check all scenarios
+  const advanced = new Set<string>()
+  const eliminated = new Set<string>()
+
+  for (const id of teamIds) {
+    let canFinishTop2 = false
+    let canFinishOutsideTop2 = false
+
+    for (const results of allResults) {
+      // Compute final points for all teams in this scenario
+      const finalPts = new Map<string, number>()
+      for (const tid of teamIdsList) {
+        finalPts.set(tid, standings.get(tid)!.pts)
+      }
+      for (let i = 0; i < remainingMatches.length; i++) {
+        const m = remainingMatches[i]
+        const r = results[i]
+        if (r === 0) {
+          finalPts.set(m.team1Id, (finalPts.get(m.team1Id) || 0) + 3)
+        } else if (r === 2) {
+          finalPts.set(m.team2Id, (finalPts.get(m.team2Id) || 0) + 3)
+        } else {
+          finalPts.set(m.team1Id, (finalPts.get(m.team1Id) || 0) + 1)
+          finalPts.set(m.team2Id, (finalPts.get(m.team2Id) || 0) + 1)
+        }
+      }
+
+      // Check if this team is in top 2 (by points only, tie-breakers not simulated)
+      const teamPts = finalPts.get(id)!
+      const teamsAhead = Array.from(finalPts.values()).filter(p => p > teamPts).length
+
+      if (teamsAhead < 2) {
+        canFinishTop2 = true
+      } else {
+        canFinishOutsideTop2 = true
+      }
+    }
+
+    if (!canFinishTop2) eliminated.add(id)
+    if (!canFinishOutsideTop2) advanced.add(id)
+  }
+
   const result = Array.from(standings.entries())
-    .map(([id, s]) => {
-      const remaining = remainingMatches.filter(m => m.team1Id === id || m.team2Id === id)
-
-      // Best/worst case points
-      const maxPts = s.pts + 3 * remaining.length
-
-      // Other teams' currents pts (for elimination check - worst case for others
-      // is they lose all remaining, so their "min" = current pts)
-      const otherCurrentPts = Array.from(standings.entries())
-        .filter(([oid]) => oid !== id)
-        .map(([_, os]) => os.pts)
-        .sort((a, b) => b - a)
-
-      // Other teams' max possible pts (for advancement check)
-      const otherMaxPts = Array.from(standings.entries())
-        .filter(([oid]) => oid !== id)
-        .map(([oid, os]) => {
-          const oRemaining = remainingMatches.filter(m => m.team1Id === oid || m.team2Id === oid)
-          return os.pts + 3 * oRemaining.length
-        })
-        .sort((a, b) => b - a)
-
-      let status: 'advanced' | 'eliminated' | undefined
-
-      // Eliminated: even winning all remaining, team can't reach 2nd place
-      // (team's max pts < other teams' current 2nd-best pts who still have matches)
-      if (maxPts < otherCurrentPts[1]) {
-        status = 'eliminated'
-      }
-
-      // Advanced: even losing all remaining, no other team can catch top-2 spot
-      // (team's current pts > 2nd-best possible pts of other teams)
-      if (s.pts > otherMaxPts[1]) {
-        status = 'advanced'
-      }
-
-      return {
-        team: s.team,
-        teamZh: s.teamZh,
-        played: s.played,
-        won: s.won,
-        drawn: s.drawn,
-        lost: s.lost,
-        gf: s.gf,
-        ga: s.ga,
-        gd: s.gf - s.ga,
-        pts: s.pts,
-        form: s.form,
-        status,
-      } as GroupStanding
-    })
+    .map(([id, s]) => ({
+      team: s.team,
+      teamZh: s.teamZh,
+      played: s.played,
+      won: s.won,
+      drawn: s.drawn,
+      lost: s.lost,
+      gf: s.gf,
+      ga: s.ga,
+      gd: s.gf - s.ga,
+      pts: s.pts,
+      form: s.form,
+      status: advanced.has(id) ? 'advanced' as const : eliminated.has(id) ? 'eliminated' as const : undefined,
+    } as GroupStanding))
     .sort((a, b) => {
       if (b.pts !== a.pts) return b.pts - a.pts
       if (b.gd !== a.gd) return b.gd - a.gd
