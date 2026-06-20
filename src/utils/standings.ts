@@ -106,11 +106,19 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
 
       // Check if this team is in top 2 (by points only, tie-breakers not simulated)
       const teamPts = finalPts.get(id)!
-      const teamsAhead = Array.from(finalPts.values()).filter(p => p > teamPts).length
+      
+      // For elimination check: strictly behind 2 teams (can't overtake)
+      const strictlyAhead = Array.from(finalPts.values()).filter(p => p > teamPts).length
+      
+      // For advancement check: if 2+ other teams have >= points,
+      // this team could lose on tiebreakers and finish 3rd
+      const notBehind = Array.from(finalPts.values()).filter(p => p >= teamPts).length // includes self
 
-      if (teamsAhead < 2) {
+      if (strictlyAhead < 2) {
         canFinishTop2 = true
-      } else {
+      }
+      // If at least 2 other teams have >= this team's points, could finish 3rd
+      if (notBehind > 2) {
         canFinishOutsideTop2 = true
       }
     }
