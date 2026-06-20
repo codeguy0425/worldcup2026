@@ -1,6 +1,19 @@
 import type { GroupStanding } from '../types'
 import { useT } from '../i18n/LanguageContext'
 
+function StatusBadge({ status }: { status?: 'advanced' | 'eliminated' }) {
+  if (!status) return null
+  return (
+    <span className={`inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold rounded ml-1 ${
+      status === 'advanced'
+        ? 'bg-green-500 text-white'
+        : 'bg-red-500 text-white'
+    }`}>
+      {status === 'advanced' ? 'A' : 'E'}
+    </span>
+  )
+}
+
 export function GroupTable({ standings }: { standings: GroupStanding[] }) {
   const t = useT()
   return (
@@ -21,11 +34,16 @@ export function GroupTable({ standings }: { standings: GroupStanding[] }) {
         </thead>
         <tbody>
           {standings.map((s, i) => (
-            <tr key={s.team} className={`border-b dark:border-gray-700/50 ${i < 2 ? 'bg-green-50 dark:bg-green-900/10' : ''}`}>
+            <tr key={s.team} className={`border-b dark:border-gray-700/50 ${
+              s.status === 'advanced' ? 'bg-green-50 dark:bg-green-900/10' :
+              s.status === 'eliminated' ? 'bg-red-50 dark:bg-red-900/10 opacity-60' :
+              i < 2 ? 'bg-green-50/50 dark:bg-green-900/5' : ''
+            }`}>
               <td className="py-2 pr-2">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs text-gray-400 w-4">{i + 1}</span>
                   <span className="truncate max-w-[80px]">{s.team}</span>
+                  <StatusBadge status={s.status} />
                 </div>
               </td>
               <td className="text-center w-8 px-1">{s.played}</td>

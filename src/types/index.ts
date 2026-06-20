@@ -55,6 +55,7 @@ export interface GroupStanding {
   gd: number
   pts: number
   form: ('W' | 'D' | 'L')[]
+  status?: 'advanced' | 'eliminated'
 }
 
 export interface Stadium {
