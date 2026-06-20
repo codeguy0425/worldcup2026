@@ -29,7 +29,7 @@ export function TeamDetail() {
         <h2 className="text-xl font-bold">{team.name}</h2>
         <p className="text-sm text-gray-500">{team.nameZh}</p>
         <div className="flex items-center justify-center gap-3 mt-2 text-xs text-gray-400">
-          <Link to={`/groups/${team.group}`} className="hover:text-blue-500 transition-colors">{t('Group')} {team.group}</Link>
+          <Link to={`/groups/${team.group}`} className="text-blue-500 hover:text-blue-600 underline underline-offset-2 decoration-dotted">{t('Group')} {team.group} ↗</Link>
           <span>•</span>
           <span>{t('FIFA')} #{team.ranking}</span>
           <span>•</span>
