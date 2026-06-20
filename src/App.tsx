@@ -12,6 +12,7 @@ import { StadiumsPage } from './pages/Stadiums'
 import { Bracket } from './pages/Bracket'
 import { ViuTV } from './pages/ViuTV'
 import { More } from './pages/More'
+import { ThirdPlaced } from './pages/ThirdPlaced'
 import { NotFound } from './pages/NotFound'
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/bracket" element={<Bracket />} />
           <Route path="/viutv" element={<ViuTV />} />
           <Route path="/more" element={<More />} />
+          <Route path="/third-placed" element={<ThirdPlaced />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
