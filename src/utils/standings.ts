@@ -82,11 +82,10 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
   const eliminated = new Set<string>()
 
   for (const id of teamIds) {
-    let canFinishTop2 = false
+    let canFinishTop3 = false
     let canFinishOutsideTop2 = false
 
     for (const results of allResults) {
-      // Compute final points for all teams in this scenario
       const finalPts = new Map<string, number>()
       for (const tid of teamIdsList) {
         finalPts.set(tid, standings.get(tid)!.pts)
@@ -104,26 +103,24 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
         }
       }
 
-      // Check if this team is in top 2 (by points only, tie-breakers not simulated)
       const teamPts = finalPts.get(id)!
       
-      // For elimination check: strictly behind 2 teams (can't overtake)
+      // For elimination check: strictly behind 3 teams (can't overtake)
       const strictlyAhead = Array.from(finalPts.values()).filter(p => p > teamPts).length
       
       // For advancement check: if 2+ other teams have >= points,
       // this team could lose on tiebreakers and finish 3rd
-      const notBehind = Array.from(finalPts.values()).filter(p => p >= teamPts).length // includes self
+      const notBehind = Array.from(finalPts.values()).filter(p => p >= teamPts).length
 
-      if (strictlyAhead < 2) {
-        canFinishTop2 = true
+      if (strictlyAhead < 3) {
+        canFinishTop3 = true
       }
-      // If at least 2 other teams have >= this team's points, could finish 3rd
       if (notBehind > 2) {
         canFinishOutsideTop2 = true
       }
     }
 
-    if (!canFinishTop2) eliminated.add(id)
+    if (!canFinishTop3) eliminated.add(id)
     if (!canFinishOutsideTop2) advanced.add(id)
   }
 
