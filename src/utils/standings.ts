@@ -73,11 +73,28 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
     }
   }
 
-  // Generate all possible remaining match outcomes
+  // Build head-to-head results from already-played matches
+  const h2h = new Map<string, Map<string, number>>()
+  for (const m of groupMatches) {
+    if (!h2h.has(m.team1Id)) h2h.set(m.team1Id, new Map())
+    if (!h2h.has(m.team2Id)) h2h.set(m.team2Id, new Map())
+    const g1 = m.score1!
+    const g2 = m.score2!
+    if (g1 > g2) {
+      h2h.get(m.team1Id)!.set(m.team2Id, 3)
+      h2h.get(m.team2Id)!.set(m.team1Id, 0)
+    } else if (g1 < g2) {
+      h2h.get(m.team1Id)!.set(m.team2Id, 0)
+      h2h.get(m.team2Id)!.set(m.team1Id, 3)
+    } else {
+      h2h.get(m.team1Id)!.set(m.team2Id, 1)
+      h2h.get(m.team2Id)!.set(m.team1Id, 1)
+    }
+  }
+
   const allResults = generateResults(remainingMatches.length)
   const teamIdsList = Array.from(teamIds)
 
-  // For each team, check all scenarios
   const advanced = new Set<string>()
   const eliminated = new Set<string>()
 
@@ -104,15 +121,22 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
       }
 
       const teamPts = finalPts.get(id)!
-      
-      // For elimination check: strictly behind 3 teams (can't overtake)
-      const strictlyAhead = Array.from(finalPts.values()).filter(p => p > teamPts).length
-      
-      // For advancement check: if 2+ other teams have >= points,
-      // this team could lose on tiebreakers and finish 3rd
+
+      const definitelyAhead = Array.from(finalPts.entries())
+        .filter(([tid, pts]) => {
+          if (tid === id) return false
+          if (pts > teamPts) return true
+          if (pts === teamPts) {
+            const h2hTid = h2h.get(tid)?.get(id) ?? 0
+            const h2hId = h2h.get(id)?.get(tid) ?? 0
+            return h2hTid > h2hId
+          }
+          return false
+        }).length
+
       const notBehind = Array.from(finalPts.values()).filter(p => p >= teamPts).length
 
-      if (strictlyAhead < 3) {
+      if (definitelyAhead < 3) {
         canFinishTop3 = true
       }
       if (notBehind > 2) {
