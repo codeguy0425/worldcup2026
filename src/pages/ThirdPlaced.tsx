@@ -30,7 +30,7 @@ export function ThirdPlaced() {
     const result: ThirdPlaceEntry[] = []
     for (const g of groupList) {
       const groupMatches = matches.filter(m => m.stage === 'group' && m.group === `Group ${g.id}`)
-      const standings = computeStandings(`Group ${g.id}`, groupMatches)
+      const { standings } = computeStandings(`Group ${g.id}`, groupMatches)
       if (standings.length < 3) continue
       const third = standings[2]
       const teamInfo = teamByName.get(third.team)

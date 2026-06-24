@@ -4,6 +4,8 @@ import { useMatchById } from '../hooks/useData'
 import { TeamBadge } from '../components/TeamBadge'
 import { ViuTVBadge } from '../components/ViuTVBadge'
 import { teams } from '../data/teams'
+import { matches } from '../data/matches'
+import { resolveTeamId } from '../utils/resolveKnockout'
 import { utcToHkt, hkDisplay } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
 import { useT, useLang } from '../i18n/LanguageContext'
@@ -41,6 +43,10 @@ export function MatchDetail() {
     )
   }
 
+  const allGroupMatches = matches.filter(m => m.stage === 'group')
+  const resolvedTeam1Id = match.stage !== 'group' ? resolveTeamId(match.team1Id, allGroupMatches) : match.team1Id
+  const resolvedTeam2Id = match.stage !== 'group' ? resolveTeamId(match.team2Id, allGroupMatches) : match.team2Id
+
   const hkt = match.timeUtc ? utcToHkt(match.timeUtc, match.date) : { date: match.date, time: match.time }
   const stadium = stadiums.find(s => s.id === match.groundId)
   const stageLabel = match.stage === 'group' && match.group
@@ -61,14 +67,14 @@ export function MatchDetail() {
 
         <div className="flex items-center justify-center gap-6 mb-4">
           <div className="flex flex-col items-center gap-2">
-            <TeamBadge teamId={match.team1Id} size="lg" />
+            <TeamBadge teamId={resolvedTeam1Id} size="lg" />
             <span className="text-3xl font-bold tabular-nums">
               {match.score1 ?? '–'}
             </span>
           </div>
           <span className="text-gray-300 text-sm font-medium">{t('VS')}</span>
           <div className="flex flex-col items-center gap-2">
-            <TeamBadge teamId={match.team2Id} size="lg" />
+            <TeamBadge teamId={resolvedTeam2Id} size="lg" />
             <span className="text-3xl font-bold tabular-nums">
               {match.score2 ?? '–'}
             </span>

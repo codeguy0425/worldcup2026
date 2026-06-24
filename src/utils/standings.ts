@@ -11,7 +11,12 @@ function generateResults(n: number): Result[][] {
   return sub.flatMap(r => [[0, ...r], [1, ...r], [2, ...r]])
 }
 
-export function computeStandings(group: string, matches: Match[]): GroupStanding[] {
+export interface GroupStandingsResult {
+  standings: GroupStanding[]
+  confirmedFirstId?: string
+}
+
+export function computeStandings(group: string, matches: Match[]): GroupStandingsResult {
   const teamIds = new Set<string>()
   const groupMatches = matches.filter(m =>
     m.stage === 'group' && m.group === group && m.score1 !== undefined && m.score2 !== undefined
@@ -97,10 +102,12 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
 
   const advanced = new Set<string>()
   const eliminated = new Set<string>()
+  const confirmedFirst = new Set<string>()
 
   for (const id of teamIds) {
     let canFinishTop3 = false
     let canFinishOutsideTop2 = false
+    let canFinishOutsideTop1 = false
 
     for (const results of allResults) {
       const finalPts = new Map<string, number>()
@@ -142,16 +149,23 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
       if (notBehind > 2) {
         canFinishOutsideTop2 = true
       }
+      if (definitelyAhead > 0) {
+        canFinishOutsideTop1 = true
+      }
     }
 
     if (!canFinishTop3) eliminated.add(id)
     if (!canFinishOutsideTop2) advanced.add(id)
+    if (!canFinishOutsideTop1) confirmedFirst.add(id)
   }
+
+  const confirmedFirstId = confirmedFirst.size > 0 ? Array.from(confirmedFirst)[0] : undefined
 
   const result = Array.from(standings.entries())
     .map(([id, s]) => ({
       team: s.team,
       teamZh: s.teamZh,
+      teamId: id,
       played: s.played,
       won: s.won,
       drawn: s.drawn,
@@ -170,5 +184,5 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
       return a.team.localeCompare(b.team)
     })
 
-  return result
+  return { standings: result, confirmedFirstId }
 }

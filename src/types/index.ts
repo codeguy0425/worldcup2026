@@ -46,6 +46,7 @@ export interface Group {
 export interface GroupStanding {
   team: string
   teamZh: string
+  teamId?: string
   played: number
   won: number
   drawn: number

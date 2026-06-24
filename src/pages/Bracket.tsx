@@ -1,13 +1,28 @@
+import { useMemo } from 'react'
 import { useMatches } from '../hooks/useData'
 import { Link } from 'react-router-dom'
 import { utcToHkt } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
 import { useT } from '../i18n/LanguageContext'
+import { resolveTeamId } from '../utils/resolveKnockout'
+import { TeamBadge } from '../components/TeamBadge'
 
 export function Bracket() {
   const t = useT()
   const matches = useMatches()
   const knockout = matches.filter(m => m.stage !== 'group')
+  const allGroupMatches = matches.filter(m => m.stage === 'group')
+
+  const resolvedIds = useMemo(() => {
+    const map = new Map<number, { team1Id: string; team2Id: string }>()
+    for (const m of knockout) {
+      map.set(m.id, {
+        team1Id: resolveTeamId(m.team1Id, allGroupMatches),
+        team2Id: resolveTeamId(m.team2Id, allGroupMatches),
+      })
+    }
+    return map
+  }, [knockout, allGroupMatches])
 
   const grouped = knockout.reduce<Record<string, typeof matches>>((acc, m) => {
     if (!acc[m.stage]) acc[m.stage] = []
@@ -43,11 +58,15 @@ export function Bracket() {
                       <span>{(m.timeUtc ? utcToHkt(m.timeUtc, m.date).time : m.time)} {t('HKT')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="flex-1 text-right text-sm font-medium truncate">{m.team1Id}</span>
+                      <div className="flex-1 text-right">
+                        <TeamBadge teamId={resolvedIds.get(m.id)?.team1Id || m.team1Id} size="md" />
+                      </div>
                       <span className="text-sm font-bold tabular-nums min-w-[40px] text-center">
                         {m.score1 !== undefined ? `${m.score1}–${m.score2}` : t('vs')}
                       </span>
-                      <span className="flex-1 text-left text-sm font-medium truncate">{m.team2Id}</span>
+                      <div className="flex-1 text-left">
+                        <TeamBadge teamId={resolvedIds.get(m.id)?.team2Id || m.team2Id} size="md" />
+                      </div>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">{stadiums.find(s => s.id === m.groundId)?.name ?? m.groundId}</p>
                   </div>

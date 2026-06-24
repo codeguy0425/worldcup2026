@@ -40,7 +40,7 @@ export function useStandings(groupId: string) {
   return useMemo(() => {
     const groupInfo = groups.find(g => g.id === groupId)
     const groupMatches = matches.filter(m => m.stage === 'group' && m.group === `Group ${groupId}`)
-    const computed = computeStandings(`Group ${groupId}`, groupMatches)
+    const { standings: computed } = computeStandings(`Group ${groupId}`, groupMatches)
     const computedIds = new Set(computed.map(s => s.team))
     if (groupInfo) {
       for (const tid of groupInfo.teams) {

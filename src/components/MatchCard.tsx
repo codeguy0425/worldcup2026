@@ -1,13 +1,19 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { TeamBadge } from './TeamBadge'
 import { ViuTVBadge } from './ViuTVBadge'
 import { utcToHkt } from '../utils/hkTime'
 import { stadiums } from '../data/stadiums'
 import { useT } from '../i18n/LanguageContext'
+import { matches } from '../data/matches'
+import { resolveTeamId } from '../utils/resolveKnockout'
 import type { Match } from '../types'
 
 export function MatchCard({ match }: { match: Match }) {
   const t = useT()
+  const allGroupMatches = useMemo(() => matches.filter(m => m.stage === 'group'), [])
+  const team1Id = match.stage !== 'group' ? resolveTeamId(match.team1Id, allGroupMatches) : match.team1Id
+  const team2Id = match.stage !== 'group' ? resolveTeamId(match.team2Id, allGroupMatches) : match.team2Id
   const { date: hkDate, time: hkTime } = match.timeUtc ? utcToHkt(match.timeUtc, match.date) : { date: match.date, time: match.time }
   const dateLabel = hkDate.slice(5)
 
@@ -21,7 +27,7 @@ export function MatchCard({ match }: { match: Match }) {
         </div>
         <div className="flex items-center justify-between gap-2">
           <div className="flex-1 text-right">
-            <TeamBadge teamId={match.team1Id} size="md" />
+            <TeamBadge teamId={team1Id} size="md" />
           </div>
           <div className="flex items-center gap-2 min-w-[60px] justify-center">
             {match.score1 !== undefined ? (
@@ -33,7 +39,7 @@ export function MatchCard({ match }: { match: Match }) {
             )}
           </div>
           <div className="flex-1 text-left">
-            <TeamBadge teamId={match.team2Id} size="md" />
+            <TeamBadge teamId={team2Id} size="md" />
           </div>
         </div>
         <div className="flex items-center justify-between mt-2">
