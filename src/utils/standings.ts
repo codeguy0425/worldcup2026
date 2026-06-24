@@ -97,66 +97,89 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
     }
   }
 
-  const allResults = generateResults(remainingMatches.length)
-  const teamIdsList = Array.from(teamIds)
+  // Build a list of team IDs sorted by full tiebreakers
+  const sortedTeamIds = [...teamIds].sort((a, b) => {
+    const sa = standings.get(a)!
+    const sb = standings.get(b)!
+    if (sb.pts !== sa.pts) return sb.pts - sa.pts
+    if (sb.gd !== sa.gd) return sb.gd - sa.gd
+    if (sb.gf !== sa.gf) return sb.gf - sa.gf
+    const h2hA = h2h.get(a)?.get(b) ?? 0
+    const h2hB = h2h.get(b)?.get(a) ?? 0
+    if (h2hB !== h2hA) return h2hB - h2hA
+    return a.localeCompare(b)
+  })
 
   const advanced = new Set<string>()
   const eliminated = new Set<string>()
   const confirmedFirst = new Set<string>()
 
-  for (const id of teamIds) {
-    let canFinishTop3 = false
-    let canFinishOutsideTop2 = false
-    let canFinishOutsideTop1 = false
+  if (remainingMatches.length === 0) {
+    // Group completed — use sorted standings directly
+    for (let i = 0; i < sortedTeamIds.length; i++) {
+      if (i < 2) advanced.add(sortedTeamIds[i])
+      else eliminated.add(sortedTeamIds[i])
+    }
+    confirmedFirst.add(sortedTeamIds[0])
+  } else {
+    // Group still in progress — simulate all outcomes
+    const allResults = generateResults(remainingMatches.length)
+    const teamIdsList = Array.from(teamIds)
 
-    for (const results of allResults) {
-      const finalPts = new Map<string, number>()
-      for (const tid of teamIdsList) {
-        finalPts.set(tid, standings.get(tid)!.pts)
-      }
-      for (let i = 0; i < remainingMatches.length; i++) {
-        const m = remainingMatches[i]
-        const r = results[i]
-        if (r === 0) {
-          finalPts.set(m.team1Id, (finalPts.get(m.team1Id) || 0) + 3)
-        } else if (r === 2) {
-          finalPts.set(m.team2Id, (finalPts.get(m.team2Id) || 0) + 3)
-        } else {
-          finalPts.set(m.team1Id, (finalPts.get(m.team1Id) || 0) + 1)
-          finalPts.set(m.team2Id, (finalPts.get(m.team2Id) || 0) + 1)
+    for (const id of teamIds) {
+      let canFinishTop3 = false
+      let canFinishOutsideTop2 = false
+      let canFinishOutsideTop1 = false
+
+      for (const results of allResults) {
+        const finalPts = new Map<string, number>()
+        for (const tid of teamIdsList) {
+          finalPts.set(tid, standings.get(tid)!.pts)
+        }
+        for (let i = 0; i < remainingMatches.length; i++) {
+          const m = remainingMatches[i]
+          const r = results[i]
+          if (r === 0) {
+            finalPts.set(m.team1Id, (finalPts.get(m.team1Id) || 0) + 3)
+          } else if (r === 2) {
+            finalPts.set(m.team2Id, (finalPts.get(m.team2Id) || 0) + 3)
+          } else {
+            finalPts.set(m.team1Id, (finalPts.get(m.team1Id) || 0) + 1)
+            finalPts.set(m.team2Id, (finalPts.get(m.team2Id) || 0) + 1)
+          }
+        }
+
+        const teamPts = finalPts.get(id)!
+
+        const definitelyAhead = Array.from(finalPts.entries())
+          .filter(([tid, pts]) => {
+            if (tid === id) return false
+            if (pts > teamPts) return true
+            if (pts === teamPts) {
+              const h2hTid = h2h.get(tid)?.get(id) ?? 0
+              const h2hId = h2h.get(id)?.get(tid) ?? 0
+              return h2hTid > h2hId
+            }
+            return false
+          }).length
+
+        const notBehind = Array.from(finalPts.values()).filter(p => p >= teamPts).length
+
+        if (definitelyAhead < 3) {
+          canFinishTop3 = true
+        }
+        if (notBehind > 2) {
+          canFinishOutsideTop2 = true
+        }
+        if (definitelyAhead > 0) {
+          canFinishOutsideTop1 = true
         }
       }
 
-      const teamPts = finalPts.get(id)!
-
-      const definitelyAhead = Array.from(finalPts.entries())
-        .filter(([tid, pts]) => {
-          if (tid === id) return false
-          if (pts > teamPts) return true
-          if (pts === teamPts) {
-            const h2hTid = h2h.get(tid)?.get(id) ?? 0
-            const h2hId = h2h.get(id)?.get(tid) ?? 0
-            return h2hTid > h2hId
-          }
-          return false
-        }).length
-
-      const notBehind = Array.from(finalPts.values()).filter(p => p >= teamPts).length
-
-      if (definitelyAhead < 3) {
-        canFinishTop3 = true
-      }
-      if (notBehind > 2) {
-        canFinishOutsideTop2 = true
-      }
-      if (definitelyAhead > 0) {
-        canFinishOutsideTop1 = true
-      }
+      if (!canFinishTop3) eliminated.add(id)
+      if (!canFinishOutsideTop2) advanced.add(id)
+      if (!canFinishOutsideTop1) confirmedFirst.add(id)
     }
-
-    if (!canFinishTop3) eliminated.add(id)
-    if (!canFinishOutsideTop2) advanced.add(id)
-    if (!canFinishOutsideTop1) confirmedFirst.add(id)
   }
 
   const confirmedFirstId = confirmedFirst.size > 0 ? Array.from(confirmedFirst)[0] : undefined
