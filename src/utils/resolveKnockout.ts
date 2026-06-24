@@ -24,14 +24,6 @@ export function resolveTeamId(placeholder: string, allGroupMatches: Match[]): st
     const groupId = winnerMatch[1]
     const result = getGroupStandings(groupId, allGroupMatches)
     if (result.confirmedFirstId) return result.confirmedFirstId
-    return result.standings[0]?.teamId || placeholder
-  }
-
-  const runnerUpMatch = placeholder.match(/^2([A-L])$/)
-  if (runnerUpMatch) {
-    const groupId = runnerUpMatch[1]
-    const result = getGroupStandings(groupId, allGroupMatches)
-    return result.standings[1]?.teamId || placeholder
   }
 
   return placeholder
