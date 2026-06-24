@@ -118,7 +118,7 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
     // Group completed — use sorted standings directly
     for (let i = 0; i < sortedTeamIds.length; i++) {
       if (i < 2) advanced.add(sortedTeamIds[i])
-      else eliminated.add(sortedTeamIds[i])
+      else if (i === 3) eliminated.add(sortedTeamIds[i])
     }
     confirmedFirst.add(sortedTeamIds[0])
   } else {
