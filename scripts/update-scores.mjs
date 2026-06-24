@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { TEAM_IDS } from './shared-data.mjs'
+import { THIRD_PLACE_MATRIX } from './third-place-matrix.mjs'
 
 const OPENFOOTBALL_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
 const MATCHES_FILE = 'src/data/matches.ts'
@@ -171,6 +172,73 @@ async function main() {
     if (t2 && gpos[t2[1]]) {
       lines[i] = lines[i].replace(/team2Id: '[^']+'/, `team2Id: '${gpos[t2[1]]}'`)
       updatedTeams++
+    }
+  }
+
+  const FAIR_PLAY = {}
+  const thirdRank = []
+  for (const [g, teams] of Object.entries(gteams)) {
+    const entries = Object.entries(teams)
+    if (entries.length < 4) continue
+    if (!entries.every(([, t]) => t.pl === 3)) continue
+    const sorted = entries.sort((a, b) => {
+      if (b[1].pts !== a[1].pts) return b[1].pts - a[1].pts
+      const gda = a[1].gf - a[1].ga, gdb = b[1].gf - b[1].ga
+      if (gdb !== gda) return gdb - gda
+      if (b[1].gf !== a[1].gf) return b[1].gf - a[1].gf
+      return a[0].localeCompare(b[0])
+    })
+    const third = sorted[2]
+    const code = TEAM_IDS[third[0]]
+    if (code) {
+      thirdRank.push({
+        group: g, code,
+        pts: third[1].pts,
+        gd: third[1].gf - third[1].ga,
+        gf: third[1].gf,
+        fairPlay: FAIR_PLAY[code] || 0
+      })
+    }
+  }
+  if (thirdRank.length >= 8) {
+    thirdRank.sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts
+      if (b.gd !== a.gd) return b.gd - a.gd
+      if (b.gf !== a.gf) return b.gf - a.gf
+      if (b.fairPlay !== a.fairPlay) return b.fairPlay - a.fairPlay
+      return a.group.localeCompare(b.group)
+    })
+    const advancing = thirdRank.slice(0, 8)
+    const elimKey = thirdRank.slice(8).map(t => t.group).sort().join('')
+    const assignments = THIRD_PLACE_MATRIX.get(elimKey)
+    if (assignments) {
+      const gp = {}
+      for (const t of advancing) gp[t.group] = t.code
+      const slots = [
+        { matchId: 79, idx: 0 }, { matchId: 85, idx: 1 },
+        { matchId: 81, idx: 2 }, { matchId: 74, idx: 3 },
+        { matchId: 82, idx: 4 }, { matchId: 77, idx: 5 },
+        { matchId: 87, idx: 6 }, { matchId: 80, idx: 7 }
+      ]
+      for (const slot of slots) {
+        const gc = assignments[slot.idx]
+        const tc = gp[gc]
+        if (!tc) continue
+        const re = new RegExp(`id: ${slot.matchId},`)
+        for (let i = 0; i < lines.length; i++) {
+          if (!re.test(lines[i])) continue
+          if (/team1Id: '3/.test(lines[i])) {
+            lines[i] = lines[i].replace(/team1Id: '3[^']+'/, `team1Id: '${tc}'`)
+            updatedTeams++
+          }
+          if (/team2Id: '3/.test(lines[i])) {
+            lines[i] = lines[i].replace(/team2Id: '3[^']+'/, `team2Id: '${tc}'`)
+            updatedTeams++
+          }
+          break
+        }
+      }
+      console.log(`  3rd-place: ${advancing.length} advancing, ${elimKey} eliminated, ${assignments} assigned`)
     }
   }
 
