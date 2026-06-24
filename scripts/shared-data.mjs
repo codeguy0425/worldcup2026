@@ -46,6 +46,11 @@ export const STAGE_LABELS = {
   'final': 'Final',
 }
 
+export const FAIR_PLAY = {
+  'PAR': -11,
+  'ALG': -1,
+}
+
 export const VIUTV_MATCHES = [
   { matchId: 1, hkDate: '2026-06-12', hkTime: '03:00' },
   { matchId: 7, hkDate: '2026-06-13', hkTime: '03:00' },

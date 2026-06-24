@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { TEAM_IDS } from './shared-data.mjs'
+import { TEAM_IDS, FAIR_PLAY } from './shared-data.mjs'
 import { THIRD_PLACE_MATRIX } from './third-place-matrix.mjs'
 
 const OPENFOOTBALL_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
@@ -175,7 +175,6 @@ async function main() {
     }
   }
 
-  const FAIR_PLAY = {}
   const thirdRank = []
   for (const [g, teams] of Object.entries(gteams)) {
     const entries = Object.entries(teams)
