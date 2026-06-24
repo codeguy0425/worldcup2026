@@ -16,7 +16,70 @@ export interface GroupStandingsResult {
   confirmedFirstId?: string
 }
 
-export function computeStandings(group: string, matches: Match[]): GroupStandingsResult {
+export interface ThirdPlaceEntry {
+  group: string
+  teamId: string
+  teamName: string
+  pts: number
+  gd: number
+  gf: number
+}
+
+export function computeThirdPlaceRanking(allMatches: Match[]): ThirdPlaceEntry[] {
+  const groupMap = new Map<string, Match[]>()
+  for (const m of allMatches) {
+    if (m.stage !== 'group') continue
+    if (!groupMap.has(m.group)) groupMap.set(m.group, [])
+    groupMap.get(m.group)!.push(m)
+  }
+
+  const entries: ThirdPlaceEntry[] = []
+
+  for (const [group, gm] of groupMap) {
+    const teamIds = new Set<string>()
+    const matchCounts = new Map<string, number>()
+    let playedCount = 0
+    for (const m of gm) {
+      teamIds.add(m.team1Id)
+      teamIds.add(m.team2Id)
+      if (m.score1 !== undefined && m.score2 !== undefined) {
+        matchCounts.set(m.team1Id, (matchCounts.get(m.team1Id) || 0) + 1)
+        matchCounts.set(m.team2Id, (matchCounts.get(m.team2Id) || 0) + 1)
+        playedCount++
+      }
+    }
+    const allComplete = teamIds.size === 4 && playedCount === 6
+    if (!allComplete) continue
+
+    const { standings } = computeStandings(group, gm)
+    if (standings.length >= 3) {
+      const third = standings[2]
+      entries.push({
+        group,
+        teamId: third.teamId || '',
+        teamName: third.team,
+        pts: third.pts,
+        gd: third.gd,
+        gf: third.gf,
+      })
+    }
+  }
+
+  entries.sort((a, b) => {
+    if (b.pts !== a.pts) return b.pts - a.pts
+    if (b.gd !== a.gd) return b.gd - a.gd
+    if (b.gf !== a.gf) return b.gf - a.gf
+    return a.teamName.localeCompare(b.teamName)
+  })
+
+  return entries
+}
+
+export function computeStandings(
+  group: string,
+  matches: Match[],
+  thirdPlaceRanking?: ThirdPlaceEntry[]
+): GroupStandingsResult {
   const teamIds = new Set<string>()
   const groupMatches = matches.filter(m =>
     m.stage === 'group' && m.group === group && m.score1 !== undefined && m.score2 !== undefined
@@ -118,7 +181,11 @@ export function computeStandings(group: string, matches: Match[]): GroupStanding
     // Group completed — use sorted standings directly
     for (let i = 0; i < sortedTeamIds.length; i++) {
       if (i < 2) advanced.add(sortedTeamIds[i])
-      else if (i === 3) eliminated.add(sortedTeamIds[i])
+      else if (i > 2) eliminated.add(sortedTeamIds[i])
+      else if (i === 2 && thirdPlaceRanking) {
+        const rankIdx = thirdPlaceRanking.findIndex(e => e.group === group)
+        if (rankIdx >= 8) eliminated.add(sortedTeamIds[i])
+      }
     }
     confirmedFirst.add(sortedTeamIds[0])
   } else {
