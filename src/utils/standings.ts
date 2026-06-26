@@ -75,134 +75,10 @@ export function computeThirdPlaceRanking(allMatches: Match[]): ThirdPlaceEntry[]
   return entries
 }
 
-function computeMaxThirdPlace(matches: Match[]): ThirdPlaceEntry | undefined {
-  const groupMatches = matches.filter(m => m.score1 !== undefined && m.score2 !== undefined)
-  const remainingMatches = matches.filter(m => m.score1 === undefined)
-  if (remainingMatches.length === 0) return undefined
-
-  const teamIds = new Set<string>()
-  for (const m of groupMatches) {
-    teamIds.add(m.team1Id)
-    teamIds.add(m.team2Id)
-  }
-  for (const m of remainingMatches) {
-    teamIds.add(m.team1Id)
-    teamIds.add(m.team2Id)
-  }
-
-  const baseStats = new Map<string, { pts: number; gf: number; ga: number }>()
-  for (const id of teamIds) {
-    baseStats.set(id, { pts: 0, gf: 0, ga: 0 })
-  }
-
-  for (const m of groupMatches) {
-    const s1 = baseStats.get(m.team1Id)!
-    const s2 = baseStats.get(m.team2Id)!
-    const g1 = m.score1!
-    const g2 = m.score2!
-    s1.gf += g1; s1.ga += g2
-    s2.gf += g2; s2.ga += g1
-    if (g1 > g2) s1.pts += 3
-    else if (g2 > g1) s2.pts += 3
-    else { s1.pts += 1; s2.pts += 1 }
-  }
-
-  const allResults = generateResults(remainingMatches.length)
-  let best: ThirdPlaceEntry | null = null
-  const groupName = matches[0]?.group || ''
-
-  for (const results of allResults) {
-    const stats = new Map<string, { pts: number; gf: number; ga: number }>()
-    for (const [id, s] of baseStats) {
-      stats.set(id, { ...s })
-    }
-
-    for (let i = 0; i < remainingMatches.length; i++) {
-      const m = remainingMatches[i]
-      const r = results[i]
-      const s1 = stats.get(m.team1Id)!
-      const s2 = stats.get(m.team2Id)!
-      const g1 = r === 0 ? 1 : r === 1 ? 0 : 0
-      const g2 = r === 2 ? 1 : r === 1 ? 0 : 0
-      s1.gf += g1; s1.ga += g2
-      s2.gf += g2; s2.ga += g1
-      if (r === 0) s1.pts += 3
-      else if (r === 2) s2.pts += 3
-      else { s1.pts += 1; s2.pts += 1 }
-    }
-
-    const sorted = [...teamIds].sort((a, b) => {
-      const sa = stats.get(a)!
-      const sb = stats.get(b)!
-      if (sb.pts !== sa.pts) return sb.pts - sa.pts
-      const gda = sa.gf - sa.ga, gdb = sb.gf - sb.ga
-      if (gdb !== gda) return gdb - gda
-      if (sb.gf !== sa.gf) return sb.gf - sa.gf
-      return a.localeCompare(b)
-    })
-
-    const thirdId = sorted[2]
-    if (thirdId) {
-      const s = stats.get(thirdId)!
-      const gd = s.gf - s.ga
-      if (!best || s.pts > best.pts || (s.pts === best.pts && gd > best.gd) || (s.pts === best.pts && gd === best.gd && s.gf > best.gf)) {
-        best = { group: groupName, teamId: thirdId, teamName: '', pts: s.pts, gd, gf: s.gf }
-      }
-    }
-  }
-
-  return best || undefined
-}
-
-export function computeThirdPlaceCeilings(allMatches: Match[]): ThirdPlaceEntry[] {
-  const groupMap = new Map<string, Match[]>()
-  for (const m of allMatches) {
-    if (m.stage !== 'group') continue
-    if (!groupMap.has(m.group)) groupMap.set(m.group, [])
-    groupMap.get(m.group)!.push(m)
-  }
-
-  const ceilings: ThirdPlaceEntry[] = []
-
-  for (const [group, gm] of groupMap) {
-    const teamIds = new Set<string>()
-    let playedCount = 0
-    for (const m of gm) {
-      teamIds.add(m.team1Id)
-      teamIds.add(m.team2Id)
-      if (m.score1 !== undefined && m.score2 !== undefined) {
-        playedCount++
-      }
-    }
-    const allComplete = teamIds.size === 4 && playedCount === 6
-
-    if (allComplete) {
-      const { standings } = computeStandings(group, gm)
-      if (standings.length >= 3) {
-        const third = standings[2]
-        ceilings.push({
-          group,
-          teamId: third.teamId || '',
-          teamName: third.team,
-          pts: third.pts,
-          gd: third.gd,
-          gf: third.gf,
-        })
-      }
-    } else {
-      const ceiling = computeMaxThirdPlace(gm)
-      if (ceiling) ceilings.push(ceiling)
-    }
-  }
-
-  return ceilings
-}
-
 export function computeStandings(
   group: string,
   matches: Match[],
-  thirdPlaceRanking?: ThirdPlaceEntry[],
-  thirdPlaceCeilings?: ThirdPlaceEntry[]
+  thirdPlaceRanking?: ThirdPlaceEntry[]
 ): GroupStandingsResult {
   const teamIds = new Set<string>()
   const groupMatches = matches.filter(m =>
@@ -310,21 +186,6 @@ export function computeStandings(
         if (thirdPlaceRanking) {
           const rankIdx = thirdPlaceRanking.findIndex(e => e.group === group)
           if (rankIdx >= 8) eliminated.add(sortedTeamIds[i])
-        }
-        if (thirdPlaceCeilings) {
-          const thirdId = sortedTeamIds[2]
-          const ts = standings.get(thirdId)
-          if (ts) {
-            const targetGd = ts.gf - ts.ga
-            let betterCount = 0
-            for (const c of thirdPlaceCeilings) {
-              if (c.group === group) continue
-              if (c.pts > ts.pts || (c.pts === ts.pts && c.gd > targetGd) || (c.pts === ts.pts && c.gd === targetGd && c.gf > ts.gf)) {
-                betterCount++
-              }
-            }
-            if (betterCount < 8) advanced.add(thirdId)
-          }
         }
       }
     }
