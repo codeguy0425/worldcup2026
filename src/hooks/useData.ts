@@ -4,7 +4,7 @@ import { teams, teamByName } from '../data/teams'
 import { groups } from '../data/groups'
 import { stadiums } from '../data/stadiums'
 import { viutvMatchIds, viutvMatches } from '../data/viutv'
-import { computeStandings, computeThirdPlaceRanking } from '../utils/standings'
+import { computeStandings, computeThirdPlaceRanking, computeThirdPlaceCeilings } from '../utils/standings'
 import type { Match, Team, Group, Stadium } from '../types'
 
 export function useMatches(): Match[] {
@@ -41,7 +41,8 @@ export function useStandings(groupId: string) {
     const groupInfo = groups.find(g => g.id === groupId)
     const groupMatches = matches.filter(m => m.stage === 'group' && m.group === `Group ${groupId}`)
     const thirdPlaceRanking = computeThirdPlaceRanking(matches)
-    const { standings: computed } = computeStandings(`Group ${groupId}`, groupMatches, thirdPlaceRanking)
+    const thirdPlaceCeilings = computeThirdPlaceCeilings(matches)
+    const { standings: computed } = computeStandings(`Group ${groupId}`, groupMatches, thirdPlaceRanking, thirdPlaceCeilings)
     const computedIds = new Set(computed.map(s => s.team))
     if (groupInfo) {
       for (const tid of groupInfo.teams) {
