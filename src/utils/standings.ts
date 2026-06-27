@@ -122,8 +122,8 @@ function computeMinThirdPlace(matches: Match[]): ThirdPlaceEntry | undefined {
       const r = results[i]
       const s1 = stats.get(m.team1Id)!
       const s2 = stats.get(m.team2Id)!
-      const g1 = r === 0 ? 2 : r === 1 ? 1 : 1
-      const g2 = r === 2 ? 2 : r === 1 ? 1 : 1
+      const g1 = r === 0 ? 3 : r === 1 ? 0 : 0
+      const g2 = r === 2 ? 3 : r === 1 ? 0 : 0
       s1.gf += g1; s1.ga += g2
       s2.gf += g2; s2.ga += g1
       if (r === 0) s1.pts += 3
