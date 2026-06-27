@@ -4,9 +4,14 @@ import { teams } from '../data/teams'
 const teamMap = new Map(teams.map(t => [t.id, t]))
 
 const FAIR_PLAY: Record<string, number> = {
+  SWE: -5,
+  BIH: -10,
+  PAR: -11,
+  SEN: -2,
+  IRN: -6,
+  KOR: -4,
   GHA: -3,
   ECU: -5,
-  PAR: -11,
   ALG: -1,
 }
 

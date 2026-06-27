@@ -47,7 +47,14 @@ export const STAGE_LABELS = {
 }
 
 export const FAIR_PLAY = {
+  'SWE': -5,
+  'BIH': -10,
   'PAR': -11,
+  'SEN': -2,
+  'IRN': -6,
+  'KOR': -4,
+  'GHA': -3,
+  'ECU': -5,
   'ALG': -1,
 }
 
