@@ -3,6 +3,13 @@ import { teams } from '../data/teams'
 
 const teamMap = new Map(teams.map(t => [t.id, t]))
 
+const FAIR_PLAY: Record<string, number> = {
+  GHA: -3,
+  ECU: -5,
+  PAR: -11,
+  ALG: -1,
+}
+
 type Result = 0 | 1 | 2 // 0=home win, 1=draw, 2=away win
 
 function generateResults(n: number): Result[][] {
@@ -23,6 +30,7 @@ export interface ThirdPlaceEntry {
   pts: number
   gd: number
   gf: number
+  fairPlay: number
 }
 
 export function computeThirdPlaceRanking(allMatches: Match[]): ThirdPlaceEntry[] {
@@ -61,6 +69,7 @@ export function computeThirdPlaceRanking(allMatches: Match[]): ThirdPlaceEntry[]
         pts: third.pts,
         gd: third.gd,
         gf: third.gf,
+        fairPlay: FAIR_PLAY[third.teamId || ''] ?? 0,
       })
     }
   }
@@ -69,6 +78,7 @@ export function computeThirdPlaceRanking(allMatches: Match[]): ThirdPlaceEntry[]
     if (b.pts !== a.pts) return b.pts - a.pts
     if (b.gd !== a.gd) return b.gd - a.gd
     if (b.gf !== a.gf) return b.gf - a.gf
+    if (b.fairPlay !== a.fairPlay) return b.fairPlay - a.fairPlay
     return a.teamName.localeCompare(b.teamName)
   })
 
@@ -146,7 +156,7 @@ function computeMinThirdPlace(matches: Match[]): ThirdPlaceEntry | undefined {
       const s = stats.get(thirdId)!
       const gd = s.gf - s.ga
       if (!worst || s.pts < worst.pts || (s.pts === worst.pts && gd < worst.gd) || (s.pts === worst.pts && gd === worst.gd && s.gf < worst.gf)) {
-        worst = { group: groupName, teamId: thirdId, teamName: '', pts: s.pts, gd, gf: s.gf }
+        worst = { group: groupName, teamId: thirdId, teamName: '', pts: s.pts, gd, gf: s.gf, fairPlay: FAIR_PLAY[thirdId] ?? 0 }
       }
     }
   }
@@ -225,7 +235,7 @@ function computeMaxThirdPlace(matches: Match[]): ThirdPlaceEntry | undefined {
       const s = stats.get(thirdId)!
       const gd = s.gf - s.ga
       if (!best || s.pts > best.pts || (s.pts === best.pts && gd > best.gd) || (s.pts === best.pts && gd === best.gd && s.gf > best.gf)) {
-        best = { group: groupName, teamId: thirdId, teamName: '', pts: s.pts, gd, gf: s.gf }
+        best = { group: groupName, teamId: thirdId, teamName: '', pts: s.pts, gd, gf: s.gf, fairPlay: FAIR_PLAY[thirdId] ?? 0 }
       }
     }
   }
@@ -266,6 +276,7 @@ export function computeThirdPlaceCeilings(allMatches: Match[]): ThirdPlaceEntry[
           pts: third.pts,
           gd: third.gd,
           gf: third.gf,
+          fairPlay: FAIR_PLAY[third.teamId || ''] ?? 0,
         })
       }
     } else {
@@ -310,6 +321,7 @@ export function computeThirdPlaceFloors(allMatches: Match[]): ThirdPlaceEntry[] 
           pts: third.pts,
           gd: third.gd,
           gf: third.gf,
+          fairPlay: FAIR_PLAY[third.teamId || ''] ?? 0,
         })
       }
     } else {
@@ -440,10 +452,11 @@ export function computeStandings(
           const ts = standings.get(thirdId)
           if (ts) {
             const targetGd = ts.gf - ts.ga
+            const targetFp = FAIR_PLAY[thirdId] ?? 0
             let betterCount = 0
             for (const c of thirdPlaceCeilings) {
               if (c.group === group) continue
-              if (c.pts > ts.pts || (c.pts === ts.pts && c.gd > targetGd) || (c.pts === ts.pts && c.gd === targetGd && c.gf > ts.gf)) {
+              if (c.pts > ts.pts || (c.pts === ts.pts && c.gd > targetGd) || (c.pts === ts.pts && c.gd === targetGd && c.gf > ts.gf) || (c.pts === ts.pts && c.gd === targetGd && c.gf === ts.gf && c.fairPlay > targetFp)) {
                 betterCount++
               }
             }
@@ -455,10 +468,11 @@ export function computeStandings(
           const ts = standings.get(thirdId)
           if (ts) {
             const targetGd = ts.gf - ts.ga
+            const targetFp = FAIR_PLAY[thirdId] ?? 0
             let aheadCount = 0
             for (const f of thirdPlaceFloors) {
               if (f.group === group) continue
-              if (f.pts > ts.pts || (f.pts === ts.pts && f.gd > targetGd) || (f.pts === ts.pts && f.gd === targetGd && f.gf > ts.gf)) {
+              if (f.pts > ts.pts || (f.pts === ts.pts && f.gd > targetGd) || (f.pts === ts.pts && f.gd === targetGd && f.gf > ts.gf) || (f.pts === ts.pts && f.gd === targetGd && f.gf === ts.gf && f.fairPlay > targetFp)) {
                 aheadCount++
               }
             }
