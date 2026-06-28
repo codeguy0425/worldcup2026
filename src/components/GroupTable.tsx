@@ -4,12 +4,12 @@ import { useT } from '../i18n/LanguageContext'
 function StatusBadge({ status }: { status?: 'advanced' | 'eliminated' }) {
   if (!status) return null
   return (
-    <span className={`inline-flex items-center justify-center px-1 h-4 text-[10px] font-bold rounded ml-1 whitespace-nowrap ${
+    <span className={`inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold rounded ml-1 ${
       status === 'advanced'
         ? 'bg-green-500 text-white'
         : 'bg-red-500 text-white'
     }`}>
-      {status === 'advanced' ? 'A' : '暫時出局'}
+      {status === 'advanced' ? 'A' : 'E'}
     </span>
   )
 }

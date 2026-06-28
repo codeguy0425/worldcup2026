@@ -99,7 +99,7 @@ export const zh: Record<string, string> = {
   'Top 8 third-placed teams advance to Round of 32': '最佳8支小組第三名晉級32強',
   'Best 3rd place teams ranking': '最佳第三名排行榜',
   'Qualifying (top 8)': '晉級中（前8名）',
-  'Currently out': '暫時出局',
+  'Currently out': '出局',
   'Q': '進',
   'OUT': ' OUT',
   'ViuTV Free Matches': 'ViuTV 免費直播',
