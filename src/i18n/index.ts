@@ -15,6 +15,7 @@ export const zh: Record<string, string> = {
   'Standings': '積分表',
   'Top Scorers': '射手榜',
   'Upcoming': '即將開始',
+  'Latest Results': '最新賽果',
   'Live': '進行中',
   'Finished': '已結束',
   'All': '全部',

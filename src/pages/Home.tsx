@@ -5,26 +5,28 @@ import { CountdownTimer } from '../components/CountdownTimer'
 import { utcToHkt } from '../utils/hkTime'
 import { useT } from '../i18n/LanguageContext'
 
+function hkDateStr(m: { date: string; timeUtc?: string }) {
+  return m.timeUtc ? utcToHkt(m.timeUtc, m.date).date : m.date
+}
+
 export function Home() {
   const t = useT()
   const allMatches = useMatches()
 
-  const now = new Date()
-  const nowUtc = now.toISOString()
-  const todayHkt = utcToHkt(nowUtc.slice(11, 16), nowUtc.slice(0, 10)).date
+  const withResult = allMatches.filter(m => m.score1 !== undefined)
+  const withoutResult = allMatches.filter(m => m.score1 === undefined)
 
-  const hkDate = (m: typeof allMatches[0]) => m.timeUtc ? utcToHkt(m.timeUtc, m.date).date : m.date
+  const latest = [...withResult].sort((a, b) => {
+    const ha = hkDateStr(a), hb = hkDateStr(b)
+    if (ha !== hb) return hb.localeCompare(ha)
+    return b.time.localeCompare(a.time)
+  }).slice(0, 6)
 
-  const sorted = [...allMatches].sort((a, b) => {
-    const ha = hkDate(a)
-    const hb = hkDate(b)
+  const upcoming = [...withoutResult].sort((a, b) => {
+    const ha = hkDateStr(a), hb = hkDateStr(b)
     if (ha !== hb) return ha.localeCompare(hb)
     return a.time.localeCompare(b.time)
-  })
-
-  const todayMatches = sorted.filter(m => hkDate(m) === todayHkt)
-  const upcoming = sorted.filter(m => hkDate(m) > todayHkt).slice(0, 5)
-  const hasMatches = todayMatches.length > 0 || upcoming.length > 0
+  }).slice(0, 6)
 
   return (
     <div className="space-y-4">
@@ -47,22 +49,27 @@ export function Home() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-          {todayMatches.length > 0 ? t('Today') : t('Upcoming')}
-        </h2>
-        <span className="text-xs text-gray-400">104 {t('matches')}</span>
-      </div>
-
-      {!hasMatches && (
-        <p className="text-center text-gray-400 py-8">{t('No matches found')}</p>
+      {latest.length > 0 && (
+        <>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            {t('Latest Results')}
+          </h2>
+          <div className="space-y-2">
+            {latest.map(m => <MatchCard key={m.id} match={m} />)}
+          </div>
+        </>
       )}
 
-      <div className="space-y-2">
-        {(todayMatches.length > 0 ? todayMatches : upcoming).map(m => (
-          <MatchCard key={m.id} match={m} />
-        ))}
-      </div>
+      {upcoming.length > 0 && (
+        <>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            {t('Upcoming')}
+          </h2>
+          <div className="space-y-2">
+            {upcoming.map(m => <MatchCard key={m.id} match={m} />)}
+          </div>
+        </>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         {[
