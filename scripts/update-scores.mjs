@@ -241,9 +241,48 @@ async function main() {
     }
   }
 
+  // Pass 4: Resolve knockout W### (winner) and L### (loser) placeholders (cascading)
+  let koResolved = 0
+  for (let pass = 0; pass < 20; pass++) {
+    let changed = false
+    const byId = {}
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/ id: (\d+),/)
+      if (!m) continue
+      const id = parseInt(m[1])
+      const t1 = lines[i].match(/team1Id: '([^']+)'/)?.[1]
+      const t2 = lines[i].match(/team2Id: '([^']+)'/)?.[1]
+      const s1 = lines[i].match(/score1: (\d+)/)?.[1]
+      const s2 = lines[i].match(/score2: (\d+)/)?.[1]
+      byId[id] = { team1: t1, team2: t2, score1: s1 != null ? +s1 : null, score2: s2 != null ? +s2 : null }
+    }
+    for (let i = 0; i < lines.length; i++) {
+      const resolve = (side) => {
+        const re = new RegExp(`${side}Id: '([^']+)'`)
+        const p = lines[i].match(re)
+        if (!p) return false
+        const m2 = p[1].match(/^([WL])(\d+)$/)
+        if (!m2) return false
+        const ref = byId[parseInt(m2[2])]
+        if (!ref || ref.score1 == null || ref.score2 == null || ref.score1 === ref.score2) return false
+        const result = m2[1] === 'W'
+          ? (ref.score1 > ref.score2 ? ref.team1 : ref.team2)
+          : (ref.score1 > ref.score2 ? ref.team2 : ref.team1)
+        if (!result || /^[WL]\d+$/.test(result)) return false
+        lines[i] = lines[i].replace(re, `${side}Id: '${result}'`)
+        return true
+      }
+      if (resolve('team1')) changed = true
+      if (resolve('team2')) changed = true
+    }
+    if (!changed) break
+    koResolved += changed ? 1 : 0
+  }
+
   fs.writeFileSync(MATCHES_FILE, lines.join('\n'))
   console.log(`  Scores updated: ${updatedScores}, Team IDs resolved: ${updatedTeams}` +
     `, Skipped (no match in source): ${skipped}`)
+  if (koResolved) console.log(`  Knockout placeholders resolved: ${koResolved} passes`)
   console.log('Done!')
 }
 
