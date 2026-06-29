@@ -4,6 +4,25 @@ import { THIRD_PLACE_MATRIX } from './third-place-matrix.mjs'
 
 const OPENFOOTBALL_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
 const MATCHES_FILE = 'src/data/matches.ts'
+const FETCH_TIMEOUT = 15000
+const MAX_RETRIES = 3
+
+async function fetchWithRetry(url, retries = MAX_RETRIES) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const ctrl = new AbortController()
+      const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT)
+      const res = await fetch(url, { signal: ctrl.signal })
+      clearTimeout(timer)
+      if (res.ok) return res
+      console.warn(`  Fetch attempt ${i + 1} failed (HTTP ${res.status}), retrying...`)
+    } catch (err) {
+      if (i === retries - 1) throw err
+      console.warn(`  Fetch attempt ${i + 1} failed (${err.message}), retrying...`)
+    }
+  }
+  throw new Error(`Failed to fetch ${url} after ${retries} attempts`)
+}
 
 function parseMinute(str) {
   const parts = String(str).split('+')
@@ -48,8 +67,7 @@ function buildGoalsString(ofm, team1Id, team2Id) {
 
 async function main() {
   console.log('Fetching openfootball data...')
-  const res = await fetch(OPENFOOTBALL_URL)
-  if (!res.ok) throw new Error(`HTTP ${res.status} fetching openfootball data`)
+  const res = await fetchWithRetry(OPENFOOTBALL_URL)
   const data = await res.json()
   const withScores = data.matches.filter(m => m.score?.ft?.length === 2)
   console.log(`  ${data.matches.length} total matches in source, ${withScores.length} with scores`)
@@ -279,7 +297,14 @@ async function main() {
     koResolved += changed ? 1 : 0
   }
 
-  fs.writeFileSync(MATCHES_FILE, lines.join('\n'))
+  const newContent = lines.join('\n')
+  if (newContent === content) {
+    console.log(`  No changes to ${MATCHES_FILE}.`)
+    console.log('Done! (no-op)')
+    return
+  }
+  fs.writeFileSync(MATCHES_FILE, newContent)
+  console.log(`  ${MATCHES_FILE} updated.`)
   console.log(`  Scores updated: ${updatedScores}, Team IDs resolved: ${updatedTeams}` +
     `, Skipped (no match in source): ${skipped}`)
   if (koResolved) console.log(`  Knockout placeholders resolved: ${koResolved} passes`)
