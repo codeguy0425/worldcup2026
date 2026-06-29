@@ -89,7 +89,7 @@ export const matches: Match[] = [
   { id: 86, round: 'Round of 32', date: '2026-07-03', time: '06:00', timeUtc: '22:00', team1Id: 'ARG', team2Id: 'CPV', group: '', groundId: 'miami', num: 86, stage: 'r32' },
   { id: 87, round: 'Round of 32', date: '2026-07-04', time: '09:30', timeUtc: '01:30', team1Id: 'COL', team2Id: 'GHA', group: '', groundId: 'kansas_city', num: 87, stage: 'r32' },
   { id: 88, round: 'Round of 32', date: '2026-07-03', time: '02:00', timeUtc: '18:00', team1Id: 'AUS', team2Id: 'EGY', group: '', groundId: 'dallas', num: 88, stage: 'r32' },
-  { id: 89, round: 'Round of 16', date: '2026-07-04', time: '05:00', timeUtc: '21:00', team1Id: 'W74', team2Id: 'W77', group: '', groundId: 'philadelphia', num: 89, stage: 'r16' },
+  { id: 89, round: 'Round of 16', date: '2026-07-04', time: '05:00', timeUtc: '21:00', team1Id: 'PAR', team2Id: 'W77', group: '', groundId: 'philadelphia', num: 89, stage: 'r16' },
   { id: 90, round: 'Round of 16', date: '2026-07-04', time: '01:00', timeUtc: '17:00', team1Id: 'CAN', team2Id: 'W75', group: '', groundId: 'houston', num: 90, stage: 'r16' },
   { id: 91, round: 'Round of 16', date: '2026-07-05', time: '04:00', timeUtc: '20:00', team1Id: 'BRA', team2Id: 'W78', group: '', groundId: 'new_york', num: 91, stage: 'r16' },
   { id: 92, round: 'Round of 16', date: '2026-07-06', time: '08:00', timeUtc: '00:00', team1Id: 'W79', team2Id: 'W80', group: '', groundId: 'mexico_city', num: 92, stage: 'r16' },

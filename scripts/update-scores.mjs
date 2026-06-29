@@ -74,6 +74,7 @@ async function main() {
 
   const byNum = new Map()
   const byTeamKey = new Map()
+  const penaltyMap = new Map()
 
   for (const m of data.matches) {
     const t1 = TEAM_IDS[m.team1]
@@ -83,6 +84,7 @@ async function main() {
       byTeamKey.set(`${t1}|${t2}`, m)
       byTeamKey.set(`${t2}|${t1}`, m)
     }
+    if (m.score?.p?.length === 2) penaltyMap.set(m.num, m.score.p)
   }
 
   let content = fs.readFileSync(MATCHES_FILE, 'utf-8')
@@ -282,10 +284,16 @@ async function main() {
         const m2 = p[1].match(/^([WL])(\d+)$/)
         if (!m2) return false
         const ref = byId[parseInt(m2[2])]
-        if (!ref || ref.score1 == null || ref.score2 == null || ref.score1 === ref.score2) return false
-        const result = m2[1] === 'W'
-          ? (ref.score1 > ref.score2 ? ref.team1 : ref.team2)
-          : (ref.score1 > ref.score2 ? ref.team2 : ref.team1)
+        if (!ref || ref.score1 == null || ref.score2 == null) return false
+        let adv = null
+        if (ref.score1 !== ref.score2) {
+          adv = ref.score1 > ref.score2 ? ref.team1 : ref.team2
+        } else {
+          const pens = penaltyMap.get(parseInt(m2[2]))
+          if (pens && pens[0] !== pens[1]) adv = pens[0] > pens[1] ? ref.team1 : ref.team2
+        }
+        if (!adv) return false
+        const result = m2[1] === 'W' ? adv : (adv === ref.team1 ? ref.team2 : ref.team1)
         if (!result || /^[WL]\d+$/.test(result)) return false
         lines[i] = lines[i].replace(re, `${side}Id: '${result}'`)
         return true
