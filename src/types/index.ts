@@ -21,6 +21,8 @@ export interface Match {
   num?: number
   score1?: number
   score2?: number
+  penalty1?: number
+  penalty2?: number
   viutv?: boolean
   goals?: GoalEvent[]
   stage: 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'third' | 'final'

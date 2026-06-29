@@ -83,7 +83,7 @@ export function Bracket() {
                         <TeamBadge teamId={resolvedIds.get(m.id)?.team1Id || m.team1Id} size="md" />
                       </div>
                       <span className="text-sm font-bold tabular-nums min-w-[40px] text-center">
-                        {m.score1 !== undefined ? `${m.score1}–${m.score2}` : t('vs')}
+                        {m.score1 !== undefined ? `${m.penalty1 !== undefined ? `(${m.penalty1}) ` : ''}${m.score1} - ${m.score2}${m.penalty2 !== undefined ? ` (${m.penalty2})` : ''}` : t('vs')}
                       </span>
                       <div className="flex-1 text-left">
                         <TeamBadge teamId={resolvedIds.get(m.id)?.team2Id || m.team2Id} size="md" />

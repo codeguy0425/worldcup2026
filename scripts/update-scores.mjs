@@ -135,6 +135,13 @@ async function main() {
           lines[i] = lines[i].replace(/, goals: \[[^\]]*\]/, '')
         }
       }
+      if (ofm.score?.p?.length === 2) {
+        if (/penalty1:\s*\d+/.test(lines[i])) {
+          lines[i] = lines[i].replace(/penalty1: \d+, penalty2: \d+/g, `penalty1: ${ofm.score.p[0]}, penalty2: ${ofm.score.p[1]}`)
+        } else {
+          lines[i] = lines[i].replace(/(, (?:goals: \[[^\]]*\], )?stage: ')/, `, penalty1: ${ofm.score.p[0]}, penalty2: ${ofm.score.p[1]}$1`)
+        }
+      }
     }
 
     if (curT1 && resolvedT1 && curT1 !== resolvedT1) {

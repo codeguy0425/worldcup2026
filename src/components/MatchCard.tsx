@@ -32,7 +32,7 @@ export function MatchCard({ match }: { match: Match }) {
           <div className="flex items-center gap-2 min-w-[60px] justify-center">
             {match.score1 !== undefined ? (
               <span className="text-lg font-bold tabular-nums">
-                {match.score1} – {match.score2}
+                {match.penalty1 !== undefined ? `(${match.penalty1}) ` : ''}{match.score1} - {match.score2}{match.penalty2 !== undefined ? ` (${match.penalty2})` : ''}
               </span>
             ) : (
               <span className="text-xs text-gray-400 font-medium">{t('VS')}</span>

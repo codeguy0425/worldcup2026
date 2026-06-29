@@ -68,16 +68,28 @@ export function MatchDetail() {
         <div className="flex items-center justify-center gap-6 mb-4">
           <div className="flex flex-col items-center gap-2">
             <TeamBadge teamId={resolvedTeam1Id} size="lg" />
-            <span className="text-3xl font-bold tabular-nums">
-              {match.score1 ?? '–'}
-            </span>
+            <div className="flex items-center gap-1">
+              {match.penalty1 !== undefined && (
+                <span className="text-lg font-bold text-gray-400">({match.penalty1})</span>
+              )}
+              <span className="text-3xl font-bold tabular-nums">
+                {match.score1 ?? '–'}
+              </span>
+            </div>
           </div>
-          <span className="text-gray-300 text-sm font-medium">{t('VS')}</span>
+          <span className="text-gray-300 text-sm font-medium">
+            {match.score1 !== undefined ? '-' : t('VS')}
+          </span>
           <div className="flex flex-col items-center gap-2">
             <TeamBadge teamId={resolvedTeam2Id} size="lg" />
-            <span className="text-3xl font-bold tabular-nums">
-              {match.score2 ?? '–'}
-            </span>
+            <div className="flex items-center gap-1">
+              <span className="text-3xl font-bold tabular-nums">
+                {match.score2 ?? '–'}
+              </span>
+              {match.penalty2 !== undefined && (
+                <span className="text-lg font-bold text-gray-400">({match.penalty2})</span>
+              )}
+            </div>
           </div>
         </div>
 
