@@ -7,6 +7,15 @@ import { useT } from '../i18n/LanguageContext'
 import { resolveTeamId } from '../utils/resolveKnockout'
 import { TeamBadge } from '../components/TeamBadge'
 
+const BRACKET_ORDER: Record<string, number[]> = {
+  r32: [74, 77, 73, 75, 76, 78, 79, 80, 83, 84, 81, 82, 86, 88, 85, 87],
+  r16: [89, 90, 93, 94, 91, 92, 95, 96],
+  qf: [97, 98, 99, 100],
+  sf: [101, 102],
+  third: [103],
+  final: [104],
+}
+
 export function Bracket() {
   const t = useT()
   const matches = useMatches()
@@ -24,11 +33,23 @@ export function Bracket() {
     return map
   }, [knockout, allGroupMatches])
 
-  const grouped = knockout.reduce<Record<string, typeof matches>>((acc, m) => {
-    if (!acc[m.stage]) acc[m.stage] = []
-    acc[m.stage].push(m)
-    return acc
-  }, {})
+  const grouped = useMemo(() => {
+    const groups = knockout.reduce<Record<string, typeof matches>>((acc, m) => {
+      if (!acc[m.stage]) acc[m.stage] = []
+      acc[m.stage].push(m)
+      return acc
+    }, {})
+
+    for (const [stage, ms] of Object.entries(groups)) {
+      const order = BRACKET_ORDER[stage]
+      if (order) {
+        const idx = new Map(order.map((id, i) => [id, i]))
+        ms.sort((a, b) => (idx.get(a.id) ?? 99) - (idx.get(b.id) ?? 99))
+      }
+    }
+
+    return groups
+  }, [knockout])
 
   const order = ['r32', 'r16', 'qf', 'sf', 'third', 'final']
 
