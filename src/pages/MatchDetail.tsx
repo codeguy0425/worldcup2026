@@ -103,6 +103,46 @@ export function MatchDetail() {
         )}
       </div>
 
+      {match.penaltyShootout && (() => {
+        const t1 = match.team1Id
+        const t2 = match.team2Id
+        const rounds = []
+        for (let i = 0; i < match.penaltyShootout.length; i += 2) {
+          rounds.push({
+            t1: match.penaltyShootout[i],
+            t2: match.penaltyShootout[i + 1]
+          })
+        }
+        const t1Scored = match.penaltyShootout.filter(k => k.teamId === t1 && k.scored).length
+        const t2Scored = match.penaltyShootout.filter(k => k.teamId === t2 && k.scored).length
+        return (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 text-center">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">{t('Penalties')}</h3>
+            <div className="max-w-xs mx-auto space-y-1.5">
+              {rounds.map((r, i) => (
+                <div key={i} className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <span className={r.t1.scored ? 'text-green-600' : 'text-red-500'}>{r.t1.scored ? '✓' : '✕'}</span>
+                    <span className={`${r.t1.scored ? '' : 'text-gray-400 line-through'}`}>{r.t1.taker}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-sm">
+                    {r.t2 && <>
+                      <span className={r.t2.scored ? 'text-green-600' : 'text-red-500'}>{r.t2.scored ? '✓' : '✕'}</span>
+                      <span className={`${r.t2.scored ? '' : 'text-gray-400 line-through'}`}>{r.t2.taker}</span>
+                    </>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center justify-center gap-3 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 text-sm font-bold tabular-nums">
+              <span>{t1Scored}</span>
+              <span className="text-gray-300">–</span>
+              <span>{t2Scored}</span>
+            </div>
+          </div>
+        )
+      })()}
+
       {goalsWithScore.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">{t('Goals')}</h3>

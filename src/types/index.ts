@@ -1,3 +1,9 @@
+export interface PenaltyKick {
+  taker: string
+  teamId: string
+  scored: boolean
+}
+
 export interface GoalEvent {
   minute: number
   stoppageTime?: number
@@ -25,6 +31,7 @@ export interface Match {
   penalty2?: number
   viutv?: boolean
   goals?: GoalEvent[]
+  penaltyShootout?: PenaltyKick[]
   stage: 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'third' | 'final'
 }
 

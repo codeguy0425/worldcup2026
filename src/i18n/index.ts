@@ -113,6 +113,7 @@ export const zh: Record<string, string> = {
   'Goals': '入球',
   'Assist': '助攻',
   'Penalty': '十二碼',
+  'Penalties': '十二碼大戰',
   'Own Goal': '烏龍球',
   'Player': '球員',
   'No goals scored yet': '尚未有入球',
