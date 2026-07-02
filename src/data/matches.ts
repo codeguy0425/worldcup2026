@@ -94,7 +94,7 @@ export const matches: Match[] = [
   { id: 91, round: 'Round of 16', date: '2026-07-05', time: '04:00', timeUtc: '20:00', team1Id: 'BRA', team2Id: 'NOR', group: '', groundId: 'new_york', num: 91, stage: 'r16' },
   { id: 92, round: 'Round of 16', date: '2026-07-06', time: '08:00', timeUtc: '00:00', team1Id: 'MEX', team2Id: 'ENG', group: '', groundId: 'mexico_city', num: 92, stage: 'r16' },
   { id: 93, round: 'Round of 16', date: '2026-07-06', time: '03:00', timeUtc: '19:00', team1Id: 'W83', team2Id: 'W84', group: '', groundId: 'dallas', num: 93, stage: 'r16' },
-  { id: 94, round: 'Round of 16', date: '2026-07-07', time: '08:00', timeUtc: '00:00', team1Id: 'USA', team2Id: 'W82', group: '', groundId: 'seattle', num: 94, stage: 'r16' },
+  { id: 94, round: 'Round of 16', date: '2026-07-07', time: '08:00', timeUtc: '00:00', team1Id: 'USA', team2Id: 'BEL', group: '', groundId: 'seattle', num: 94, stage: 'r16' },
   { id: 95, round: 'Round of 16', date: '2026-07-07', time: '00:00', timeUtc: '16:00', team1Id: 'W86', team2Id: 'W88', group: '', groundId: 'atlanta', num: 95, stage: 'r16' },
   { id: 96, round: 'Round of 16', date: '2026-07-07', time: '04:00', timeUtc: '20:00', team1Id: 'W85', team2Id: 'W87', group: '', groundId: 'vancouver', num: 96, stage: 'r16' },
   { id: 97, round: 'Quarter-final', date: '2026-07-09', time: '04:00', timeUtc: '20:00', team1Id: 'W89', team2Id: 'W90', group: '', groundId: 'boston', num: 97, stage: 'qf' },
