@@ -116,11 +116,12 @@ async function main() {
     const curT2 = line.match(/team2Id: '([^']+)'/)?.[1]
     const resolvedT1 = TEAM_IDS[ofm.team1]
     const resolvedT2 = TEAM_IDS[ofm.team2]
-    if (ofm.score?.ft?.length === 2) {
+    const finalScore = ofm.score?.et?.length === 2 ? ofm.score.et : ofm.score?.ft
+    if (finalScore?.length === 2) {
       if (/score1:\s*\d+/.test(line)) {
-        lines[i] = lines[i].replace(/score1: \d+, score2: \d+/g, `score1: ${ofm.score.ft[0]}, score2: ${ofm.score.ft[1]}`)
+        lines[i] = lines[i].replace(/score1: \d+, score2: \d+/g, `score1: ${finalScore[0]}, score2: ${finalScore[1]}`)
       } else {
-        lines[i] = lines[i].replace(/team2Id: '[^']+'/, `$&, score1: ${ofm.score.ft[0]}, score2: ${ofm.score.ft[1]}`)
+        lines[i] = lines[i].replace(/team2Id: '[^']+'/, `$&, score1: ${finalScore[0]}, score2: ${finalScore[1]}`)
       }
       updatedScores++
       if ('goals1' in ofm || 'goals2' in ofm) {
