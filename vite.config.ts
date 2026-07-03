@@ -12,6 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,xml,json}'],
+        navigateFallback: '/worldcup2026/index.html',
+        navigateFallbackDenylist: [/^\/worldcup2026\/assets\//],
         runtimeCaching: [{
           urlPattern: /^https?:\/\/.*/i,
           handler: 'NetworkFirst',
