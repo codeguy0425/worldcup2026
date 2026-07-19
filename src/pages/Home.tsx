@@ -46,7 +46,7 @@ export function Home() {
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-blue-200 text-xs font-medium uppercase tracking-wider">{t('FIFA World Cup 2026')}</p>
-            <p className="text-2xl font-bold mt-0.5">{t('11 Jun – 19 Jul')}</p>
+            <p className="text-2xl font-bold mt-0.5">{t('12 Jun – 20 Jul')}</p>
             <p className="text-blue-200 text-sm">{t('USA · Canada · Mexico')}</p>
           </div>
           <span className="text-5xl">🏆</span>

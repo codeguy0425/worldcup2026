@@ -65,7 +65,7 @@ export const zh: Record<string, string> = {
 
   'Opening Match': '開幕戰',
   'FIFA World Cup 2026': 'FIFA 世界盃 2026',
-  '11 Jun – 19 Jul': '6月11日 – 7月19日',
+  '12 Jun – 20 Jul': '6月12日 – 7月20日',
   'USA · Canada · Mexico': '美國 · 加拿大 · 墨西哥',
 
   'Standings will appear after matches begin': '賽事開始後將顯示積分表',
