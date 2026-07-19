@@ -120,6 +120,12 @@ export const zh: Record<string, string> = {
   'Mexico': '墨西哥',
   'South Africa': '南非',
   '12 Jun 03:00 HKT': '6月12日 03:00 HKT',
+  'Tournament Completed': '賽事完結',
+  'Champion': '冠軍',
+  'Runner-up': '亞軍',
+  'Fourth Place': '殿軍',
+  'Top Scorer': '神射手',
+  'Final Ranking': '最終排名',
 }
 
 export type Lang = 'en' | 'zh'

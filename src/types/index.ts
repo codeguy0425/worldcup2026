@@ -9,6 +9,7 @@ export interface GoalEvent {
   stoppageTime?: number
   scorer: string
   teamId: string
+  shirtNo?: number
   assist?: string
   ownGoal?: boolean
   penalty?: boolean
